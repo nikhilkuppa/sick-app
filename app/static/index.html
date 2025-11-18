@@ -17,6 +17,7 @@
   <!-- Styles -->
   <link rel="stylesheet" href="/static/css/modern-styles.css">
   <link rel="stylesheet" href="/static/css/exciting-ui.css">
+  <link rel="stylesheet" href="/static/css/medicine-cabinet.css">
 
   <!-- Favicon -->
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
@@ -216,36 +217,57 @@
       
       <!-- Medications Tracking Section -->
       <section id="medications-section" class="app-section">
-        <h2 class="section-title"><i class="fas fa-pills"></i> Medication Tracking</h2>
-        
+        <h2 class="section-title"><i class="fas fa-pills"></i> Digital Medicine Cabinet</h2>
+
         <div class="section-content">
-          <div class="medication-dashboard">
-            <div class="dashboard-header">
-              <h3>Your Medications</h3>
-              <button id="add-medication-button" class="action-button">
-                <i class="fas fa-plus"></i> Add Medication
+          <!-- Cabinet Controls -->
+          <div class="cabinet-controls">
+            <div class="cabinet-controls-left">
+              <button id="cabinet-add-medicine-btn" class="btn-primary">
+                <i class="fas fa-plus"></i> Add Medicine
               </button>
-            </div>
-            
-            <div id="medication-tracking-display" class="medication-tracking-display">
-              <!-- Medications will be displayed here -->
-              <div class="no-medications-message">
-                <i class="fas fa-prescription-bottle-alt icon-large"></i>
-                <p>You haven't tracked any medications yet.</p>
-                <p>Use the "Track this medication" button when you get recommendations or add them manually.</p>
+
+              <!-- View Toggle -->
+              <div class="view-toggle">
+                <button id="cabinet-shelf-view" class="view-toggle-btn active" title="Shelf View">
+                  <i class="fas fa-th-large"></i> Cabinet
+                </button>
+                <button id="cabinet-grid-view" class="view-toggle-btn" title="Grid View">
+                  <i class="fas fa-th"></i> Grid
+                </button>
               </div>
             </div>
-            
-            <!-- Medication Calendar/Schedule View -->
-            <div class="medication-schedule">
-              <h3>Today's Schedule</h3>
-              <div id="today-schedule" class="schedule-list">
-                <!-- Today's medication schedule will be displayed here -->
-                <div class="no-schedule-message">
-                  <p>No medications scheduled for today.</p>
-                </div>
+
+            <div class="cabinet-controls-right">
+              <!-- Category Filter -->
+              <select id="cabinet-category-filter" class="cabinet-filter">
+                <option value="all">All Categories</option>
+                <option value="Pain Relief">Pain Relief</option>
+                <option value="Cold & Flu">Cold & Flu</option>
+                <option value="Allergy">Allergy</option>
+                <option value="Digestive">Digestive</option>
+                <option value="First Aid">First Aid</option>
+                <option value="Vitamins">Vitamins</option>
+                <option value="Prescription">Prescription</option>
+                <option value="Other">Other</option>
+              </select>
+
+              <!-- Search -->
+              <div class="cabinet-search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="cabinet-search" placeholder="Search medicines...">
               </div>
             </div>
+          </div>
+
+          <!-- Medicine Cabinet Display -->
+          <div id="medicine-cabinet-display" class="medicine-cabinet-container" data-view="cabinet">
+            <!-- Medicines will be rendered here by medicine-cabinet.js -->
+          </div>
+
+          <!-- Stats Summary -->
+          <div class="cabinet-stats" id="cabinet-stats">
+            <!-- Stats will be displayed here -->
           </div>
         </div>
       </section>
@@ -766,6 +788,7 @@
   <script src="/static/js/apiService.js" type="module"></script>
   <script src="/static/js/auth.js" type="module"></script>
   <script src="/static/js/onboarding.js" type="module"></script>
+  <script src="/static/js/medicine-cabinet.js" type="module"></script>
   <script src="/static/js/medications.js" type="module"></script>
   <script src="/static/js/app.js" type="module"></script>
 
