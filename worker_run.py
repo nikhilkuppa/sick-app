@@ -1,17 +1,26 @@
 # worker_run.py
+"""
+Background worker launcher for processing tasks from the queue.
+Replaces Redis Queue (RQ) worker with lightweight SQLite-based task queue.
+"""
+
 import os
 import sys
 import logging
 import argparse
-from app.workers.worker import start_worker
+from app.core.task_worker import start_worker
 from app.config import active_config
+
+# Import tasks to register them
+from app.workers import tasks
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='[%(asctime)s] [WORKER_LAUNCHER] [%(levelname)s] %(message)s',
+    level=active_config.LOG_LEVEL or logging.INFO,
+    format='[%(asctime)s] [WORKER] [%(levelname)s] %(message)s',
     handlers=[
-        logging.StreamHandler()
+        logging.StreamHandler(),
+        logging.FileHandler('worker.log')
     ]
 )
 
@@ -19,36 +28,40 @@ logger = logging.getLogger(__name__)
 
 def parse_arguments():
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description='Start worker processes')
-    
+    parser = argparse.ArgumentParser(description='Start background task worker')
+
     parser.add_argument(
         '--concurrency',
         type=int,
         default=active_config.WORKER_CONCURRENCY,
-        help='Number of worker processes'
+        help='Number of concurrent workers (for future enhancement)'
     )
-    
+
     parser.add_argument(
-        '--worker-id',
-        type=str,
-        default='worker',
-        help='Worker identifier prefix'
+        '--poll-interval',
+        type=int,
+        default=2,
+        help='Seconds to wait between polling for new tasks'
     )
-    
+
     return parser.parse_args()
 
 if __name__ == '__main__':
     # Parse arguments
     args = parse_arguments()
-    
-    logger.info(f"Starting worker with concurrency {args.concurrency}")
-    
+
+    logger.info("=" * 60)
+    logger.info("Starting Task Worker (Redis-free!)")
+    logger.info(f"Concurrency: {args.concurrency}")
+    logger.info(f"Poll interval: {args.poll_interval}s")
+    logger.info("=" * 60)
+
     try:
         # Start worker
-        start_worker(worker_id=args.worker_id, concurrency=args.concurrency)
+        start_worker(concurrency=args.concurrency)
     except KeyboardInterrupt:
-        logger.info("Worker launcher stopped by user")
+        logger.info("Worker stopped by user (Ctrl+C)")
         sys.exit(0)
     except Exception as e:
-        logger.error(f"Worker launcher error: {str(e)}")
+        logger.error(f"Worker error: {str(e)}", exc_info=True)
         sys.exit(1)

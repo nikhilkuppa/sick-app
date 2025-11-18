@@ -5,10 +5,12 @@ import traceback
 from app.core.recommender import generate_recommendation
 from app.db.supabase_client import update_recommendation_status
 from app.utils.metrics import track_worker_job
+from app.core.task_queue import register_task
 
 # Initialize logger
 logger = logging.getLogger(__name__)
 
+@register_task
 def process_symptoms(symptom_query: str, job_id: str, user_profile=None, subscription_tier='anonymous'):
     """
     Process symptoms and generate recommendations.

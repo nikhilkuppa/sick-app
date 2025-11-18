@@ -3,21 +3,22 @@ from flask import Flask
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import redis
 import logging
 import os
 from app.config import active_config
 from app.utils.logger import setup_logging
 
-# Initialize Redis connection
-redis_client = redis.from_url(active_config.REDIS_URL)
-
-# Initialize rate limiter
+# Initialize in-memory rate limiter (NO REDIS!)
+# Uses simple in-memory storage instead of Redis
 limiter = Limiter(
     key_func=get_remote_address,
-    storage_uri=active_config.REDIS_URL,
+    storage_uri="memory://",  # In-memory storage
     default_limits=[active_config.RATE_LIMIT_DEFAULT]
 )
+
+# Import new caching and task queue systems
+from app.core.caching_new import memory_cache, cache_result
+from app.core.task_queue import task_queue, enqueue_task
 
 def create_app():
     """Create and configure the Flask application."""

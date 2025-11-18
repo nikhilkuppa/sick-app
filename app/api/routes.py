@@ -3,11 +3,10 @@ import os
 import uuid
 import json
 from flask import Blueprint, request, jsonify, current_app, g
-from rq import Queue, Retry
-from app import redis_client
+from app.core.task_queue import enqueue_task, get_task_result, task_queue
 from app.workers.tasks import process_symptoms
 from app.db.supabase_client import (
-    insert_recommendation_job, 
+    insert_recommendation_job,
     get_recommendation_status,
     get_user_recommendations
 )
@@ -22,34 +21,26 @@ import requests
 # Create blueprint
 api_bp = Blueprint('api', __name__, url_prefix='/api/v1')
 
-# Initialize Redis queue
-queue = Queue(active_config.REDIS_QUEUE_NAME, connection=redis_client)
+# NO REDIS! Using new lightweight task queue instead
 
 @api_bp.route('/health', methods=['GET'])
 def health_check():
     """API health check endpoint."""
     track_api_request('health_check')
-    
-    # Check Redis connection
-    redis_ok = False
+
+    # Check task queue status
+    queue_stats = {}
     try:
-        redis_ok = redis_client.ping()
-    except:
-        redis_ok = False
-    
-    # Check queue
-    queue_count = 0
-    try:
-        queue_count = len(queue)
+        queue_stats = task_queue.get_queue_stats()
     except:
         pass
-        
+
     # Return health status
     return jsonify({
         'status': 'ok',
-        'redis_connected': redis_ok,
-        'queue_size': queue_count,
-        'version': '1.0.0',
+        'queue_stats': queue_stats,
+        'version': '2.0.0',  # Bumped version (Redis-free!)
+        'cache': 'in-memory'
     })
 
 @api_bp.route('/recommendation', methods=['POST'])
@@ -145,28 +136,22 @@ def get_recommendation():
             current_app.logger.error(f"Database error: {str(e)}")
             return jsonify({'error': 'Failed to create job record'}), 500
         
-        # For anonymous users, store job ID in the session for later counting
+        # For anonymous users, store job ID in the request context
         if not user_id:
-            # Store the job ID in the request context
             g.anonymous_job_id = job_id
-            # Set flag for anonymous request (will be checked in status endpoint)
-            redis_client.set(f"anon:job:{job_id}", request.remote_addr, ex=3600)  # 1 hour expiry
-        
-        # Enqueue background job with retry
+            # Note: No longer using Redis for anonymous tracking
+            # Anonymous limits are tracked in Supabase by IP
+
+        # Enqueue background job using new lightweight task queue
         try:
-            job = queue.enqueue(
+            task_id = enqueue_task(
                 process_symptoms,
                 user_query,
                 job_id,
                 user_profile,
-                subscription_tier,
-                job_id=job_id,
-                retry=Retry(
-                    max=active_config.MAX_RETRIES,
-                    interval=active_config.RETRY_INTERVALS
-                )
+                subscription_tier
             )
-            current_app.logger.info(f"Job {job_id} enqueued with ID: {job.id}")
+            current_app.logger.info(f"Job {job_id} enqueued with task ID: {task_id}")
         except Exception as e:
             current_app.logger.error(f"Queue error: {str(e)}")
             return jsonify({'error': 'Failed to enqueue job'}), 500

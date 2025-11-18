@@ -1,31 +1,35 @@
 # app/config.py
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from both .env and .env.local
+# .env.local takes precedence and contains secrets
+load_dotenv()  # Load .env first (public config)
+load_dotenv(dotenv_path=Path('.env.local'), override=True)  # Override with secrets from .env.local
 
 class Config:
     """Base configuration class."""
     # API Configuration
     API_VERSION = "v1"
     ALLOWED_ORIGINS = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
-    
-    # Redis Configuration
-    REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379")
-    REDIS_QUEUE_NAME = "recommendations"
-    REDIS_CACHE_EXPIRATION = 3600  # 1 hour in seconds
-    
-    # Supabase Configuration
+
+    # NEW: In-Memory Cache Configuration (replaces Redis)
+    CACHE_EXPIRATION = int(os.environ.get("CACHE_EXPIRATION", 3600))  # 1 hour in seconds
+    MAX_CACHE_SIZE = int(os.environ.get("MAX_CACHE_SIZE", 5000))  # Max items in cache
+
+    # Supabase Configuration (our main database)
     SUPABASE_URL = os.environ.get("SUPABASE_URL")
     SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    SUPABASE_ANON_KEY = os.environ.get("SUPABASE_ANON_KEY")
     
     # Gemini AI Configuration
     GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-    
-    # Worker Configuration
+
+    # NEW: Background Task Configuration (replaces Redis Queue)
+    TASK_DB_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "tasks.db")
     WORKER_CONCURRENCY = int(os.environ.get("WORKER_CONCURRENCY", 4))
-    MAX_RETRIES = 3
+    MAX_RETRIES = int(os.environ.get("MAX_RETRIES", 3))
     RETRY_INTERVALS = [10, 30, 60]  # Seconds between retries
     
     # Rate Limiting
@@ -52,6 +56,11 @@ class Config:
     
     # Google Maps API for pharmacy search
     GOOGLE_MAPS_API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY")
+
+    # JWT Configuration
+    JWT_SECRET = os.environ.get("JWT_SECRET")
+    ACCESS_TOKEN_EXPIRY = int(os.environ.get("ACCESS_TOKEN_EXPIRY", 900))  # 15 minutes
+    REFRESH_TOKEN_EXPIRY = int(os.environ.get("REFRESH_TOKEN_EXPIRY", 604800))  # 7 days
 
 class DevelopmentConfig(Config):
     """Development configuration."""

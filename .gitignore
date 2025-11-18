@@ -1,1 +1,33 @@
+# Virtual Environment
 /app-venv
+venv/
+env/
+*.pyc
+__pycache__/
+
+# Environment variables with secrets
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Build
+dist/
+build/
+*.egg-info/
