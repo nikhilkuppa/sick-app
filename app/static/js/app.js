@@ -389,6 +389,135 @@ function displayResults(data) {
       return; // Skip to next iteration
     }
 
+    // Feature 4: Check if this is Treatment Plan
+    if (item["Treatment Plan"]) {
+      const plan = item["Treatment Plan"];
+      const planDiv = document.createElement('div');
+      planDiv.className = 'treatment-plan bounce-in';
+
+      // Header
+      const header = document.createElement('h3');
+      header.innerHTML = '<i class="fas fa-calendar-check"></i> Your Treatment Plan';
+      planDiv.appendChild(header);
+
+      // Duration Badge
+      if (plan.duration) {
+        const durationBadge = document.createElement('div');
+        durationBadge.className = 'treatment-duration';
+        durationBadge.innerHTML = `<i class="fas fa-clock"></i> ${plan.duration}`;
+        planDiv.appendChild(durationBadge);
+      }
+
+      // Timeline
+      if (plan.timeline) {
+        const timeline = document.createElement('div');
+        timeline.className = 'treatment-timeline';
+
+        const timeIcons = {
+          morning: 'fa-sun',
+          afternoon: 'fa-cloud-sun',
+          evening: 'fa-cloud-moon',
+          night: 'fa-moon'
+        };
+
+        Object.keys(plan.timeline).forEach((day, index) => {
+          const dayData = plan.timeline[day];
+          const dayDiv = document.createElement('div');
+          dayDiv.className = index === 0 ? 'treatment-day active' : 'treatment-day';
+
+          // Day Header
+          const dayHeader = document.createElement('div');
+          dayHeader.className = 'day-header';
+
+          const dayNumber = document.createElement('div');
+          dayNumber.className = 'day-number';
+          dayNumber.textContent = day;
+          dayHeader.appendChild(dayNumber);
+
+          dayDiv.appendChild(dayHeader);
+
+          // Day Schedule
+          const schedule = document.createElement('div');
+          schedule.className = 'day-schedule';
+
+          ['morning', 'afternoon', 'evening', 'night'].forEach(timeOfDay => {
+            if (dayData[timeOfDay]) {
+              const timeSlot = document.createElement('div');
+              timeSlot.className = `time-slot ${timeOfDay}`;
+
+              const timeHeader = document.createElement('div');
+              timeHeader.className = 'time-slot-header';
+              timeHeader.innerHTML = `<i class="fas ${timeIcons[timeOfDay]}"></i> ${timeOfDay}`;
+              timeSlot.appendChild(timeHeader);
+
+              const timeContent = document.createElement('div');
+              timeContent.className = 'time-slot-content';
+              timeContent.textContent = dayData[timeOfDay];
+              timeSlot.appendChild(timeContent);
+
+              schedule.appendChild(timeSlot);
+            }
+          });
+
+          dayDiv.appendChild(schedule);
+
+          // Expected Progress
+          if (dayData.expectedProgress) {
+            const progress = document.createElement('div');
+            progress.className = 'expected-progress';
+            progress.innerHTML = `
+              <strong><i class="fas fa-chart-line"></i> Expected Progress:</strong>
+              <p>${dayData.expectedProgress}</p>
+            `;
+            dayDiv.appendChild(progress);
+          }
+
+          timeline.appendChild(dayDiv);
+        });
+
+        planDiv.appendChild(timeline);
+      }
+
+      // When to Reassess
+      if (plan.whenToReassess) {
+        const reassessDiv = document.createElement('div');
+        reassessDiv.className = 'treatment-reassessment';
+        reassessDiv.innerHTML = `
+          <div class="reassessment-title">
+            <i class="fas fa-user-md"></i> When to Seek Medical Help
+          </div>
+          <div class="reassessment-text">${plan.whenToReassess}</div>
+        `;
+        planDiv.appendChild(reassessDiv);
+      }
+
+      // Improvement Signs
+      if (plan.improvementSigns && plan.improvementSigns.length > 0) {
+        const signsDiv = document.createElement('div');
+        signsDiv.className = 'improvement-signs';
+
+        const signsHeader = document.createElement('h4');
+        signsHeader.innerHTML = '<i class="fas fa-heartbeat"></i> Signs of Improvement';
+        signsDiv.appendChild(signsHeader);
+
+        const signsList = document.createElement('div');
+        signsList.className = 'improvement-list';
+
+        plan.improvementSigns.forEach(sign => {
+          const signItem = document.createElement('div');
+          signItem.className = 'improvement-item';
+          signItem.textContent = sign;
+          signsList.appendChild(signItem);
+        });
+
+        signsDiv.appendChild(signsList);
+        planDiv.appendChild(signsDiv);
+      }
+
+      elements.resultsDiv.appendChild(planDiv);
+      return;
+    }
+
     // Check if this is First Aid (could be index 0 or 1 depending on if Symptom Assessment exists)
     if (item["First Aid"]) {
       // Special formatting for First Aid

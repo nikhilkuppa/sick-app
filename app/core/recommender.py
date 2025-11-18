@@ -159,7 +159,19 @@ def recommender_prompt(query, context, user_context=None):
     - Loss of consciousness or altered mental state
     - Severe allergic reaction symptoms
 
-    The second object should be "First Aid" that you will suggest based on your expert knowledge base
+    The second object should be "Treatment Plan" (Feature 4 - NEW) with a day-by-day recovery plan:
+    - "duration": Expected treatment duration in days (e.g., "3-5 days", "7 days")
+    - "timeline": Object with daily breakdown (Day 1, Day 2, etc.)
+    - Each day should have:
+      * "morning": What to do/take in AM
+      * "afternoon": Midday actions
+      * "evening": PM actions
+      * "night": Before bed actions
+      * "expectedProgress": What user should feel/see by end of this day
+    - "whenToReassess": When to seek medical help if not improving
+    - "improvementSigns": What indicates treatment is working
+
+    The third object should be "First Aid" that you will suggest based on your expert knowledge base
     [recommending first aid is NOT medical advice, but please be diligent],
     and after that each object contains the following keys:
     ["Brand Name(s)", "Scientific Name", "Dosage", "Symptoms Addressed", "Reference URL"].
@@ -190,6 +202,36 @@ def recommender_prompt(query, context, user_context=None):
                 "seekDoctor": true,
                 "doctorUrgency": "within_24h",
                 "reasoning": "Fever above 101°F persisting for more than 3 days should be evaluated by a healthcare provider to rule out bacterial infection."
+            }}
+        }},
+        {{
+            "Treatment Plan": {{
+                "duration": "3-5 days",
+                "timeline": {{
+                    "Day 1": {{
+                        "morning": "Take acetaminophen 500mg with food, drink 8oz water, rest",
+                        "afternoon": "Stay hydrated, light meal, monitor temperature",
+                        "evening": "Take acetaminophen 500mg if fever returns, warm shower",
+                        "night": "Extra pillow for elevation, humidifier on, early bedtime",
+                        "expectedProgress": "Fever should start breaking, slight energy return"
+                    }},
+                    "Day 2": {{
+                        "morning": "Continue acetaminophen as needed, eat nutritious breakfast",
+                        "afternoon": "Short walk if feeling better, continue fluids",
+                        "evening": "Light exercise okay if energy permits, medication as needed",
+                        "night": "Normal sleep routine, continue humidifier",
+                        "expectedProgress": "Significant improvement, appetite returning"
+                    }},
+                    "Day 3": {{
+                        "morning": "Reduce medication frequency, resume normal activities gradually",
+                        "afternoon": "Monitor for relapse, stay hydrated",
+                        "evening": "Medication only if symptoms return",
+                        "night": "Normal routine",
+                        "expectedProgress": "Near full recovery, minimal symptoms"
+                    }}
+                }},
+                "whenToReassess": "If fever persists beyond 3 days or symptoms worsen",
+                "improvementSigns": ["Fever breaking", "Energy returning", "Appetite improving", "Pain subsiding"]
             }}
         }},
         {{

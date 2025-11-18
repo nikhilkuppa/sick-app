@@ -1297,3 +1297,272 @@ button:active:not(:disabled) {
     padding: 5px 10px;
   }
 }
+
+/* ===== Feature 4: Dynamic Treatment Plan ===== */
+
+/* Treatment Plan Container */
+.treatment-plan {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(76, 175, 80, 0.3);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 30px;
+  animation: slideInUp 0.6s ease-out;
+}
+
+.treatment-plan h3 {
+  color: #81C784;
+  font-size: 1.6rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.treatment-plan h3 i {
+  color: #4CAF50;
+  font-size: 1.8rem;
+}
+
+/* Duration Badge */
+.treatment-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  border-radius: 25px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  font-size: 0.95rem;
+}
+
+.treatment-duration i {
+  font-size: 1.1rem;
+}
+
+/* Day-by-Day Timeline */
+.treatment-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.treatment-day {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid #4CAF50;
+  border-radius: 12px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.treatment-day:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+}
+
+.treatment-day.active {
+  border-left-width: 6px;
+  border-left-color: #FFB74D;
+  background: rgba(255, 183, 77, 0.1);
+}
+
+.day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.day-number {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #81C784;
+}
+
+.day-progress-indicator {
+  font-size: 0.85rem;
+  color: #A5D6A7;
+  font-style: italic;
+}
+
+/* Time of Day Slots */
+.day-schedule {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.time-slot {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-slot-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #FFB74D;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.time-slot-header i {
+  font-size: 1rem;
+}
+
+.time-slot-content {
+  color: #E0E0E0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* Time-specific icon colors */
+.time-slot.morning .time-slot-header {
+  color: #FFD54F;
+}
+
+.time-slot.afternoon .time-slot-header {
+  color: #FFA726;
+}
+
+.time-slot.evening .time-slot-header {
+  color: #FF7043;
+}
+
+.time-slot.night .time-slot-header {
+  color: #7E57C2;
+}
+
+/* Expected Progress */
+.expected-progress {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(129, 199, 132, 0.1));
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 15px;
+}
+
+.expected-progress strong {
+  color: #81C784;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  margin-bottom: 6px;
+}
+
+.expected-progress p {
+  color: #C8E6C9;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* Reassessment Section */
+.treatment-reassessment {
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.15), rgba(255, 183, 77, 0.1));
+  border: 2px solid #FFA726;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 20px 0;
+}
+
+.reassessment-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFB74D;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.reassessment-title i {
+  font-size: 1.3rem;
+}
+
+.reassessment-text {
+  color: #FFE082;
+  line-height: 1.6;
+}
+
+/* Improvement Signs */
+.improvement-signs {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 18px;
+  margin-top: 20px;
+}
+
+.improvement-signs h4 {
+  color: #81C784;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.improvement-signs h4 i {
+  color: #4CAF50;
+}
+
+.improvement-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.improvement-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 8px;
+  color: #A5D6A7;
+  font-size: 0.9rem;
+}
+
+.improvement-item::before {
+  content: '✓';
+  color: #4CAF50;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .treatment-plan {
+    padding: 20px 15px;
+  }
+
+  .day-schedule {
+    grid-template-columns: 1fr;
+  }
+
+  .improvement-list {
+    grid-template-columns: 1fr;
+  }
+
+  .day-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .treatment-timeline {
+    gap: 15px;
+  }
+}
