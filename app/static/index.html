@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get over-the-counter drug recommendations for your symptoms">
+  <title>Sick?</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/static/css/modern-styles.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <!-- Header with Navigation -->
+  <header class="app-header">
+    <div class="container header-container">
+      <div class="logo">
+        <h1>ayuda.</h1>
+      </div>
+      
+      <!-- Main Navigation Menu -->
+      <nav class="main-nav">
+        <ul>
+          <li><a href="#" id="nav-home" class="active"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="#" id="nav-medications"><i class="fas fa-pills"></i> Medications</a></li>
+          <li><a href="#" id="nav-history"><i class="fas fa-history"></i> History</a></li>
+          <li><a href="#" id="nav-profile"><i class="fas fa-user-circle"></i> Profile</a></li>
+        </ul>
+      </nav>
+      
+      <!-- User Account Area (Right Side) -->
+      <div class="user-area">
+        <!-- Anonymous View -->
+        <div id="auth-anonymous" class="auth-section auth-logged-out">
+          <div id="anonymous-limit-info" class="limit-info">
+            <span>Remaining: <span id="anonymous-limit">3</span></span>
+          </div>
+          <button id="login-button" class="auth-button">Login</button>
+          <button id="register-button" class="auth-button primary">Sign Up</button>
+        </div>
+        
+        <!-- Authenticated View -->
+        <div id="auth-authenticated" class="auth-section auth-logged-in" style="display: none;">
+          <div class="user-profile-button" id="user-profile-dropdown-toggle">
+            <div class="avatar">
+              <i class="fas fa-user"></i>
+            </div>
+            <div class="user-info">
+              <span id="user-name-display">User</span>
+              <span id="subscription-badge" class="subscription-badge free">FREE</span>
+            </div>
+            <i class="fas fa-chevron-down dropdown-icon"></i>
+          </div>
+          
+          <!-- User Dropdown Menu -->
+          <div id="user-dropdown-menu" class="dropdown-menu">
+            <ul>
+              <li id="profile-menu-item"><i class="fas fa-user-circle"></i> My Profile</li>
+              <li id="medications-menu-item"><i class="fas fa-pills"></i> Medications</li>
+              <li id="history-menu-item"><i class="fas fa-history"></i> History</li>
+              <li class="divider"></li>
+              <li id="logout-button"><i class="fas fa-sign-out-alt"></i> Logout</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Hamburger Menu (Always Visible) -->
+      <div class="hamburger-menu" id="hamburger-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      
+      <!-- Mobile Nav Menu -->
+      <nav id="mobile-nav" class="mobile-nav">
+        <ul>
+          <li><a href="#" id="mobile-home"><i class="fas fa-home"></i> Home</a></li>
+          <li><a href="#" id="mobile-medications"><i class="fas fa-pills"></i> Medications</a></li>
+          <li><a href="#" id="mobile-history"><i class="fas fa-history"></i> History</a></li>
+          <li><a href="#" id="mobile-profile"><i class="fas fa-user-circle"></i> Profile</a></li>
+          <li class="mobile-auth-anonymous">
+            <a href="#" id="mobile-login"><i class="fas fa-sign-in-alt"></i> Login</a>
+          </li>
+          <li class="mobile-auth-anonymous">
+            <a href="#" id="mobile-register"><i class="fas fa-user-plus"></i> Sign Up</a>
+          </li>
+          <li class="mobile-auth-authenticated" style="display: none;">
+            <a href="#" id="mobile-logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Bear Animation Mascot -->
+  <div id="bear-mascot" class="bear-mascot">
+    <div class="bear-container">
+      <div class="bear-head">
+        <div class="bear-ears">
+          <div class="ear left"></div>
+          <div class="ear right"></div>
+        </div>
+        <div class="bear-face">
+          <div class="eyes">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+          </div>
+          <div class="nose"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+      <div class="bear-body"></div>
+    </div>
+  </div>
+
+  <!-- Main Content Sections -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Home Section (Default View) -->
+      <section id="home-section" class="app-section active">
+        <div class="search-container">
+          <h2 class="section-title">How are you feeling?</h2>
+          <div class="input-with-button">
+            <input 
+              type="text" 
+              id="symptoms" 
+              placeholder="Tell us your symptoms..." 
+              aria-label="Enter your symptoms"
+              autocomplete="off"
+            />
+            <button 
+              id="submit-button" 
+              aria-label="Get recommendations based on symptoms"
+            >
+              <i class="fas fa-search"></i> Get Help
+            </button>
+          </div>
+        </div>
+        
+        <!-- Results Section -->
+        <div id="results" class="results-container" aria-live="polite">
+          <!-- Results will be displayed here -->
+        </div>
+        
+        <!-- Pharmacy Section (Will be shown after search) -->
+        <div id="pharmacy-section" class="pharmacy-section" style="display: none;">
+          <h3><i class="fas fa-store-alt"></i> Find Nearby Pharmacies</h3>
+          <p>Enter your ZIP code to find pharmacies near you that may carry these medications.</p>
+          
+          <div class="input-with-button">
+            <input 
+              type="text" 
+              id="zip-code" 
+              placeholder="Enter ZIP code" 
+              pattern="[0-9]{5}" 
+              maxlength="5"
+            />
+            <button id="pharmacy-button">
+              <i class="fas fa-map-marker-alt"></i> Find
+            </button>
+          </div>
+          
+          <div id="pharmacy-results" class="pharmacy-results"></div>
+        </div>
+      </section>
+      
+      <!-- Medications Tracking Section -->
+      <section id="medications-section" class="app-section">
+        <h2 class="section-title"><i class="fas fa-pills"></i> Medication Tracking</h2>
+        
+        <div class="section-content">
+          <div class="medication-dashboard">
+            <div class="dashboard-header">
+              <h3>Your Medications</h3>
+              <button id="add-medication-button" class="action-button">
+                <i class="fas fa-plus"></i> Add Medication
+              </button>
+            </div>
+            
+            <div id="medication-tracking-display" class="medication-tracking-display">
+              <!-- Medications will be displayed here -->
+              <div class="no-medications-message">
+                <i class="fas fa-prescription-bottle-alt icon-large"></i>
+                <p>You haven't tracked any medications yet.</p>
+                <p>Use the "Track this medication" button when you get recommendations or add them manually.</p>
+              </div>
+            </div>
+            
+            <!-- Medication Calendar/Schedule View -->
+            <div class="medication-schedule">
+              <h3>Today's Schedule</h3>
+              <div id="today-schedule" class="schedule-list">
+                <!-- Today's medication schedule will be displayed here -->
+                <div class="no-schedule-message">
+                  <p>No medications scheduled for today.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Unified History Section -->
+      <section id="history-section" class="app-section">
+        <h2 class="section-title"><i class="fas fa-history"></i> Your History</h2>
+        
+        <div class="section-content">
+          <!-- Tab navigation -->
+          <div class="tabs">
+            <button class="tab-link active" onclick="openTab(event, 'medication-history-tab')">Medication History</button>
+            <button class="tab-link" onclick="openTab(event, 'query-history-tab')">Query History</button>
+          </div>
+
+          <!-- Medication History Tab -->
+          <div id="medication-history-tab" class="tab-content" style="display: block;">
+            <div id="history-container" class="history-container">
+              <!-- Medication history will be rendered here by medications.js -->
+              <p>Loading medication history...</p>
+            </div>
+          </div>
+
+          <!-- Query History Tab -->
+          <div id="query-history-tab" class="tab-content">
+            <div id="query-history-container" class="history-container">
+              <!-- Query history will be rendered here by medications.js -->
+              <p>Loading query history...</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Profile Section -->
+      <section id="profile-section" class="app-section">
+        <h2 class="section-title"><i class="fas fa-user-circle"></i> Your Profile</h2>
+        
+        <div class="section-content">
+          <form id="profile-form" class="profile-form card-container">
+            <div class="card">
+              <h3>Personal Information</h3>
+              <div class="form-group">
+                <label for="profile-name">Name</label>
+                <input type="text" id="profile-name" name="name">
+              </div>
+              
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="profile-age">Age</label>
+                  <input type="number" id="profile-age" name="age" min="0" max="120">
+                </div>
+                
+                <div class="form-group">
+                  <label for="profile-gender">Gender</label>
+                  <select id="profile-gender" name="gender">
+                    <option value="">-- Select --</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label for="profile-zip">ZIP Code</label>
+                <input type="text" id="profile-zip" name="zip_code" pattern="[0-9]{5}" maxlength="5">
+              </div>
+            </div>
+            
+            <div class="card">
+              <h3>Medical Information</h3>
+              <div class="form-group">
+                <label for="profile-allergies">Allergies (comma-separated)</label>
+                <input type="text" id="profile-allergies" name="allergies" placeholder="penicillin, shellfish, peanuts">
+              </div>
+              
+              <div class="form-group">
+                <label for="profile-medication_history">Current Medications (comma-separated)</label>
+                <input type="text" id="profile-medication_history" name="medication_history" placeholder="Record of current and past medications including prescriptions, OTC drugs, supplements">
+              </div>
+            </div>
+            
+            <div id="profile-error" class="error-message"></div>
+            <div id="profile-success" class="success-message" style="display: none;"></div>
+            
+            <button type="submit" class="profile-save-button">Save Profile</button>
+          </form>
+          
+          <!-- Danger Zone -->
+          <div class="card-container">
+            <div class="card danger-zone">
+              <h3><i class="fas fa-exclamation-triangle"></i> Danger Zone</h3>
+              <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+              <button id="delete-account-button" class="delete-account-btn">Delete Account</button>
+              
+              <div id="delete-confirmation" class="delete-confirmation" style="display: none;">
+                <p>Are you sure? This will permanently delete all your data.</p>
+                <div class="button-group">
+                  <button id="confirm-delete-button" class="delete-confirm-btn">Yes, Delete</button>
+                  <button id="cancel-delete-button" class="delete-cancel-btn">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container">
+      <p>This tool is for informational purposes only and does not replace professional medical advice.</p>
+      <p>&copy; 2025 Sick?</p>
+    </div>
+  </footer>
+
+  <!-- Authentication Modals -->
+  <!-- Login Modal -->
+  <div id="login-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Log In</h2>
+
+      <div class="social-login-container">
+        <button class="social-login-button google" data-provider="google">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v6/icons/google.svg" alt="Google" />
+          Sign in with Google
+        </button>
+      </div>
+      <div class="auth-separator">
+        <span>or</span>
+      </div>
+      
+      <form id="login-form" class="auth-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" name="password" required>
+        </div>
+        
+        <div id="login-error" class="error-message"></div>
+        
+        <button type="submit" class="auth-button primary">Log In</button>
+        
+        <div class="auth-links">
+          <a href="#" id="forgot-password">Forgot password?</a>
+          <a href="#" id="go-to-register">Need an account? Register</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Registration Modal -->
+  <div id="register-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Create Account</h2>
+
+      <div class="social-login-container">
+        <button class="social-login-button google" data-provider="google">
+          <img src="https://cdn.jsdelivr.net/npm/simple-icons@v6/icons/google.svg" alt="Google" />
+          Sign up with Google
+        </button>
+      </div>
+      <div class="auth-separator">
+        <span>or</span>
+      </div>
+      
+      <form id="register-form" class="auth-form">
+        <div class="form-group">
+          <label for="register-email">Email</label>
+          <input type="email" id="register-email" name="email" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="register-name">Name</label>
+          <input type="text" id="register-name" name="name">
+        </div>
+        
+        <div class="form-group">
+          <label for="register-password">Password</label>
+          <input type="password" id="register-password" name="password" required minlength="8">
+          <span class="form-hint">Password must be at least 8 characters</span>
+        </div>
+        
+        <div id="register-error" class="error-message"></div>
+        
+        <button type="submit" class="auth-button primary">Create Account</button>
+        
+        <div class="auth-links">
+          <a href="#" id="go-to-login">Already have an account? Log in</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Reset Password Modal -->
+  <div id="reset-password-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Reset Password</h2>
+      
+      <form id="reset-password-form" class="auth-form">
+        <div class="form-group">
+          <label for="reset-email">Email</label>
+          <input type="email" id="reset-email" name="email" required>
+        </div>
+        
+        <div id="reset-error" class="error-message"></div>
+        <div id="reset-success" class="success-message"></div>
+        
+        <button type="submit" class="auth-button primary">Send Reset Link</button>
+        
+        <div class="auth-links">
+          <a href="#" id="back-to-login">Back to login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Medication Tracking Modal -->
+  <div id="medication-tracking-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Track Medication</h2>
+      
+      <form id="medication-tracking-form" class="tracking-form">
+        <div class="form-group">
+          <label for="tracking-drug-name">Medication Name</label>
+          <input type="text" id="tracking-drug-name" name="drug_name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="tracking-brand-name">Brand Name</label>
+          <input type="text" id="tracking-brand-name" name="brand_name">
+        </div>
+        
+        <div class="form-group">
+          <label for="tracking-dosage">Dosage</label>
+          <input type="text" id="tracking-dosage" name="dosage">
+        </div>
+        
+        <div class="form-group">
+          <label for="tracking-frequency">Frequency</label>
+          <select id="tracking-frequency" name="frequency" required>
+            <option value="once">Once</option>
+            <option value="daily">Daily</option>
+            <option value="twice-daily">Twice Daily</option>
+            <option value="three-times-daily">Three Times Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="as-needed">As Needed</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="tracking-start-date">Start Date</label>
+          <input type="date" id="tracking-start-date" name="start_date" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="tracking-end-date">End Date (Optional)</label>
+          <input type="date" id="tracking-end-date" name="end_date">
+        </div>
+        
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="tracking-reminder-enabled" name="reminder_enabled">
+          <label for="tracking-reminder-enabled">Set Reminders</label>
+        </div>
+        
+        <div id="reminder-times-section" class="form-group" style="display: none;">
+          <label>Reminder Times</label>
+          <div id="reminder-times-container">
+            <!-- Reminder time inputs will be added here -->
+          </div>
+          <button type="button" id="add-reminder-time" class="add-time-btn">Add Time</button>
+        </div>
+        
+        <button type="submit" class="tracking-save-button">Save Medication</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Medication Status Modal -->
+  <div id="medication-status-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Medication Status</h2>
+      
+      <div class="medication-details">
+        <h3 id="status-drug-name">Medication Name</h3>
+        <p id="status-schedule">Next dose: <span id="next-dose-time">8:00 AM</span></p>
+      </div>
+      
+      <div class="status-options">
+        <button id="mark-taken-button" class="status-button taken">
+          <i class="fas fa-check"></i> Taken
+        </button>
+        <button id="mark-skipped-button" class="status-button skipped">
+          <i class="fas fa-times"></i> Skipped
+        </button>
+      </div>
+      
+      <div class="status-history">
+        <h4>Recent History</h4>
+        <ul id="medication-status-history">
+          <!-- Medication status history will be displayed here -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Confirmation Modal -->
+  <div id="delete-account-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-button">&times;</span>
+      <h2>Delete Account</h2>
+      
+      <div class="warning-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        <p>This action is permanent and cannot be undone.</p>
+        <p>All your data, including medication tracking, recommendations, and profile information will be permanently deleted.</p>
+      </div>
+      
+      <div class="confirmation-buttons">
+        <button id="confirm-delete-account" class="delete-confirm-btn">Yes, Delete My Account</button>
+        <button id="cancel-delete-account" class="delete-cancel-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notification Container -->
+  <div id="notification-container"></div>
+
+  <!-- Application Scripts -->
+  <script src="/static/js/modern-ui.js" type="module"></script>
+  <script src="/static/js/apiService.js" type="module"></script>
+  <script src="/static/js/auth.js" type="module"></script>
+  <script src="/static/js/medications.js" type="module"></script>
+  <script src="/static/js/app.js" type="module"></script>
+
+  <script>
+    function openTab(evt, tabName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tab-content");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tab-link");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
+</body>
+</html>

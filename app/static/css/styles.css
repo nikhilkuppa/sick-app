@@ -1,0 +1,337 @@
+/* Main CSS styles for the drug recommendation application */
+
+/* Basic reset for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    background-color: black;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif; /* Modern, clean font */
+    /* background-color: #121212; Dark background */
+    /* background-color: #20321e;  */
+    height: 100vh;
+    background-image: linear-gradient(to bottom, #20321e 0%, #20321e 55%, #000000 100%); /* Green gradient */
+    color: #eee; /* Light text color */
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure full viewport height */
+  }
+  
+  h1 {
+    /* color: #66cdaa; Teal/Greenish color */
+    font-family: 'Helvetica';
+    color: #f0e4d1; /* Teal/Greenish color */
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700; /* Bold heading */
+  }
+  
+  input[type="text"] {
+    padding: 10px;
+    width: 100%; /* Full width input */
+    margin-bottom: 10px; /* Space below input */
+    border: none; /* Remove default border */
+    background-color: #222; /* Darker input background */
+    color: #eee; /* Light input text */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: all 0.3s ease; /* Smooth transitions */
+  }
+  
+  input[type="text"]:focus{
+      outline: none;
+      box-shadow: 0 4px 8px rgba(102, 205, 170, 0.4);
+  }
+
+  .content {
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    background-color: #d79b41;
+    /* background-image: linear-gradient(to right, #4CAF50, #66cdaa); Green gradient */
+    width: 100%;
+    color: white;
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: all 0.3s ease; /* Smooth transitions */
+  }
+  
+  button:hover {
+    background-image: linear-gradient(to right, #45a049, #56b290); /* Darker green gradient on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* More prominent shadow on hover */
+  }
+  
+  button:disabled {
+    background-image: linear-gradient(to right, #6c757d, #868e96);
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  #results {
+    margin-top: 20px;
+    flex-grow: 1; /* Allow results to expand */
+  }
+  
+  #results div {
+    background-color: #403b3a; /* Darker result background */
+    border: none; /* Remove default border */
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: all 0.3s ease; /* Smooth transitions */
+  }
+  
+  #results h4 {
+    color: #66cdaa; /* Teal/Greenish color for heading */
+    margin-bottom: 10px;
+    font-weight: 700; /* Bold heading */
+  }
+  
+  #results p {
+    margin: 5px 0;
+    color: #ddd; /* Slightly lighter text in results */
+  }
+  
+  #results a {
+    color: #4CAF50; /* Green link color */
+    text-decoration: none;
+    transition: color 0.3s ease; /* Smooth color transition */
+  }
+  
+  #results a:hover {
+    text-decoration: underline;
+    color: #56b290; /* Darker green on hover */
+  }
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin: 0 auto;
+  }
+  
+  /* Loading spinner */
+  .spinner {
+    margin: 20px auto;
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(102, 205, 170, 0.3);
+    border-radius: 50%;
+    border-top-color: #66cdaa;
+    animation: spin 1s ease-in-out infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Status messages */
+  .status-message {
+    text-align: center;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 8px;
+  }
+  
+  .status-queued {
+    background-color: rgba(102, 205, 170, 0.1);
+    border-left: 4px solid #66cdaa;
+  }
+  
+  .status-processing {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+  }
+  
+  .status-error {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid #dc3545;
+  }
+  
+  /* First Aid recommendation styling */
+  .first-aid {
+    border: 2px solid #dc3545 !important;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .first-aid h3 {
+    color: #d79b41;
+    /* color: #dc3545; */
+    margin-bottom: 15px;
+  }
+  
+  .first-aid strong {
+    color: #f8f9fa;
+  }
+
+  .first-aid.emergency {
+    background-color: #dc3545;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+  
+  .no-meds-warning {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-radius: 6px;
+  }
+
+  .pharmacy-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    background-color: #fff;
+    transition: box-shadow 0.3s, transform 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .pharmacy-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    cursor: pointer;
+  }
+  
+  .pharmacy-list a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  /* Medication Tracking Display Styles */
+.medication-tracking-display {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #222;
+  border-radius: 8px;
+}
+
+.medication-tracking-display h3 {
+  color: #66cdaa;
+  margin-bottom: 15px;
+}
+
+.tracked-medications {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.medication-item {
+  background-color: #333;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.medication-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.medication-item h4 {
+  color: #66cdaa;
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.medication-item p {
+  margin: 5px 0;
+  font-size: 14px;
+}  
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .container {
+      width: 95%;
+    }
+    
+    input[type="text"] {
+      font-size: 16px; /* Better for mobile */
+    }
+  }
+  
+  /* Dark mode toggle */
+  .theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #66cdaa;
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Light theme (for potential future use) */
+  body.light-theme {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+  
+  body.light-theme input[type="text"] {
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  body.light-theme #results div {
+    background-color: #fff;
+  }
+  
+  body.light-theme #results h4 {
+    color: #4CAF50;
+  }
+  
+  body.light-theme #results p {
+    color: #555;
+  }
+  
+  /* Accessibility */
+  :focus {
+    outline: 2px solid #66cdaa;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #222;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #4CAF50;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #66cdaa;
+  }
