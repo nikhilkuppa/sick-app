@@ -1566,3 +1566,21 @@ button:active:not(:disabled) {
     gap: 15px;
   }
 }
+
+/* Fix card spacing */
+.drug-card,
+.first-aid,
+.symptom-assessment,
+.treatment-plan {
+  margin-bottom: 30px !important;
+}
+
+.results-container > * {
+  margin-bottom: 25px;
+}
+
+/* Extra spacing for important cards */
+.symptom-assessment,
+.treatment-plan {
+  margin-bottom: 35px !important;
+}

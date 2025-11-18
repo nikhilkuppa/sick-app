@@ -1,7 +1,5 @@
 // onboarding.js - Handle the onboarding flow for new users
 
-import apiService from './apiService.js';
-
 class OnboardingManager {
   constructor() {
     this.currentStep = 1;
@@ -32,11 +30,9 @@ class OnboardingManager {
       const token = localStorage.getItem('token');
       if (!token) return;
 
-      const profile = await apiService.getUserProfile();
-
       // Show onboarding if user just registered and profile is incomplete
       const onboardingCompleted = localStorage.getItem('onboarding_completed');
-      if (!onboardingCompleted && (!profile || !profile.name)) {
+      if (!onboardingCompleted) {
         this.showOnboarding();
       }
     } catch (error) {
@@ -276,7 +272,8 @@ class OnboardingManager {
         zip_code: this.onboardingData.zip_code || null
       };
 
-      await apiService.updateUserProfile(profileData);
+      // Save to localStorage for now (can be synced to backend later)
+      localStorage.setItem('user_profile', JSON.stringify(profileData));
     } catch (error) {
       console.error('Error saving basic profile:', error);
       this.showNotification('Error saving profile. Please try again.', 'error');
@@ -291,7 +288,10 @@ class OnboardingManager {
         medication_history: this.onboardingData.conditions
       };
 
-      await apiService.updateUserProfile(healthData);
+      // Save to localStorage for now
+      const profile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+      Object.assign(profile, healthData);
+      localStorage.setItem('user_profile', JSON.stringify(profile));
     } catch (error) {
       console.error('Error saving health info:', error);
       this.showNotification('Error saving health information.', 'error');
@@ -301,15 +301,10 @@ class OnboardingManager {
 
   async saveMedications() {
     try {
-      // Save each medication separately
-      for (const med of this.onboardingData.medications) {
-        await apiService.addMedication({
-          drug_name: med,
-          dosage: '',
-          frequency: 'as_needed',
-          time_of_day: []
-        });
-      }
+      // Save medications to localStorage for now
+      const profile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+      profile.medications = this.onboardingData.medications;
+      localStorage.setItem('user_profile', JSON.stringify(profile));
     } catch (error) {
       console.error('Error saving medications:', error);
       this.showNotification('Error saving medications.', 'error');
