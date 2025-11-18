@@ -4,8 +4,8 @@ import os
 from app.utils.metrics import initialize_metrics
 from app.config import active_config
 
-# Initialize metrics
-initialize_metrics(active_config.REDIS_URL)
+# Initialize metrics (no Redis needed!)
+initialize_metrics()
 
 # Create Flask application
 app = create_app()

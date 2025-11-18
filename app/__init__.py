@@ -17,7 +17,7 @@ limiter = Limiter(
 )
 
 # Import new caching and task queue systems
-from app.core.caching_new import memory_cache, cache_result
+from app.core.caching import memory_cache, cache_result
 from app.core.task_queue import task_queue, enqueue_task
 
 def create_app():

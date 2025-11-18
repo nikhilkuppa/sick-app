@@ -1,13 +1,17 @@
 # app/utils/metrics.py
+"""
+Metrics tracking module - in-memory storage (no Redis).
+Tracks API requests, response times, errors, and worker jobs.
+"""
+
 import time
 import functools
 import threading
 import json
 import os
 from collections import defaultdict
-import redis
 
-# Store metrics in memory temporarily
+# Store metrics in memory
 _metrics = {
     "api_requests": defaultdict(int),
     "response_times": defaultdict(list),
@@ -20,30 +24,14 @@ _metrics = {
 # Thread lock for thread-safe operations
 _lock = threading.Lock()
 
-# Redis client for distributed metrics
-_redis_client = None
-
-def initialize_metrics(redis_url):
-    """Initialize the metrics module with Redis connection."""
-    global _redis_client
-    try:
-        _redis_client = redis.from_url(redis_url)
-        return True
-    except Exception as e:
-        print(f"Error initializing metrics Redis connection: {e}")
-        return False
+def initialize_metrics():
+    """Initialize the metrics module (no longer needs Redis)."""
+    return True
 
 def track_api_request(endpoint):
     """Track API request count for a specific endpoint."""
     with _lock:
         _metrics["api_requests"][endpoint] += 1
-    
-    # Also store in Redis if available
-    if _redis_client:
-        try:
-            _redis_client.hincrby("metrics:api_requests", endpoint, 1)
-        except Exception as e:
-            print(f"Error tracking API request in Redis: {e}")
 
 def track_response_time(endpoint, time_ms):
     """Track response time for a specific endpoint."""
@@ -52,40 +40,18 @@ def track_response_time(endpoint, time_ms):
         # Keep only last 1000 measurements
         if len(_metrics["response_times"][endpoint]) > 1000:
             _metrics["response_times"][endpoint] = _metrics["response_times"][endpoint][-1000:]
-    
-    # Also store in Redis if available
-    if _redis_client:
-        try:
-            _redis_client.lpush(f"metrics:response_time:{endpoint}", time_ms)
-            _redis_client.ltrim(f"metrics:response_time:{endpoint}", 0, 999)  # Keep last 1000
-        except Exception as e:
-            print(f"Error tracking response time in Redis: {e}")
 
 def track_error(endpoint, error_type):
     """Track error occurrence for a specific endpoint."""
     error_key = f"{endpoint}:{error_type}"
     with _lock:
         _metrics["error_counts"][error_key] += 1
-    
-    # Also store in Redis if available
-    if _redis_client:
-        try:
-            _redis_client.hincrby("metrics:errors", error_key, 1)
-        except Exception as e:
-            print(f"Error tracking error in Redis: {e}")
 
 def track_worker_job(job_type, status):
     """Track worker job execution."""
     job_key = f"{job_type}:{status}"
     with _lock:
         _metrics["worker_jobs"][job_key] += 1
-    
-    # Also store in Redis if available
-    if _redis_client:
-        try:
-            _redis_client.hincrby("metrics:worker_jobs", job_key, 1)
-        except Exception as e:
-            print(f"Error tracking worker job in Redis: {e}")
 
 def track_cache(hit=True):
     """Track cache hit/miss."""
@@ -94,16 +60,6 @@ def track_cache(hit=True):
             _metrics["cache_hits"] += 1
         else:
             _metrics["cache_misses"] += 1
-    
-    # Also store in Redis if available
-    if _redis_client:
-        try:
-            if hit:
-                _redis_client.incr("metrics:cache_hits")
-            else:
-                _redis_client.incr("metrics:cache_misses")
-        except Exception as e:
-            print(f"Error tracking cache metrics in Redis: {e}")
 
 def get_metrics():
     """Get current metrics."""

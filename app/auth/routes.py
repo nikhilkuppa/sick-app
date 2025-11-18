@@ -19,7 +19,7 @@ from app.auth.services import (
 from app.utils.security import validate_input
 from app.auth.rate_limiter import increment_request_count
 from app.api.route_metrics import route_timed_execution
-from app import redis_client
+from app.core.caching import memory_cache  # Use new in-memory cache
 import hashlib
 import smtplib
 from email.mime.text import MIMEText
@@ -688,15 +688,12 @@ def get_medication_adherence(medication_id):
         
         # Use a sliding window rate limit (30 requests per minute)
         # This is much more permissive than before but prevents abuse
-        if redis_client.exists(rate_key):
-            count = int(redis_client.get(rate_key))
-            if count > 30:  # Allow 30 requests per minute from the same browser for the same medication
-                return jsonify({'error': 'Too many requests. Please try again later.'}), 429
-            
-            redis_client.incr(rate_key)
-        else:
-            # Set initial count with 60-second expiry
-            redis_client.setex(rate_key, 60, 1)
+        count = memory_cache.get(rate_key) or 0
+        if count > 30:  # Allow 30 requests per minute from the same browser for the same medication
+            return jsonify({'error': 'Too many requests. Please try again later.'}), 429
+
+        # Increment and set with 60-second TTL
+        memory_cache.set(rate_key, count + 1, 60)
 
         auth_header = request.headers.get('Authorization')
         user_id = None
@@ -717,10 +714,10 @@ def get_medication_adherence(medication_id):
         
         # Check the cache first (add server-side caching)
         cache_key = f"med_adherence:{medication_id}:{days}:{user_id}"
-        cached_data = redis_client.get(cache_key)
-        
+        cached_data = memory_cache.get(cache_key)
+
         if cached_data:
-            return jsonify(json.loads(cached_data))
+            return jsonify(cached_data)
         
         # Get the medication to verify ownership
         from app.db.supabase_client import get_supabase_client
@@ -776,7 +773,7 @@ def get_medication_adherence(medication_id):
         
         # Cache the result for 5 minutes (300 seconds)
         # This prevents hammering the database for the same data
-        redis_client.setex(cache_key, 300, json.dumps(response_data))
+        memory_cache.set(cache_key, response_data, 300)
         
         return jsonify(response_data)
         
@@ -813,15 +810,13 @@ def get_bulk_medication_adherence():
         # Rate limit based on the number of medications requested
         client_ip = request.remote_addr
         rate_key = f"bulk_adherence_{client_ip}"
-        
-        if redis_client.exists(rate_key):
-            count = int(redis_client.get(rate_key))
-            if count > 5:  # Allow 5 bulk requests per minute
-                return jsonify({'error': 'Too many requests. Please try again later.'}), 429
-            
-            redis_client.incr(rate_key)
-        else:
-            redis_client.setex(rate_key, 60, 1)
+
+        count = memory_cache.get(rate_key) or 0
+        if count > 5:  # Allow 5 bulk requests per minute
+            return jsonify({'error': 'Too many requests. Please try again later.'}), 429
+
+        # Increment and set with 60-second TTL
+        memory_cache.set(rate_key, count + 1, 60)
         
         from app.db.supabase_client import get_supabase_client
         supabase = get_supabase_client()

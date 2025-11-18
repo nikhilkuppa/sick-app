@@ -219,17 +219,10 @@ def get_status(job_id):
         if job['status'] == 'done':
             try:
                 payload['result'] = json.loads(job['result'])
-                
-                # If this is an anonymous user and the job is done successfully,
-                # now we increment the request count
-                anon_ip = redis_client.get(f"anon:job:{job_id}")
-                if anon_ip:
-                    anon_ip = anon_ip.decode('utf-8')
-                    # Increment request count
-                    increment_request_count(anon_ip)
-                    # Delete the job tracking key
-                    redis_client.delete(f"anon:job:{job_id}")
-                
+
+                # Note: Anonymous request tracking is now handled differently
+                # No Redis needed - tracking happens at recommendation creation time
+
             except (json.JSONDecodeError, TypeError):
                 payload['result'] = job['result']
                 
