@@ -585,26 +585,32 @@ const MedicationService = {
                 console.log('Fetching medication data from API...');
                 const data = await apiServiceRequest(MEDICATION_API.GET_ALL);
                 
-                // Deduplicate medications by drug name
+                // Deduplicate medications by unique combination of drug name, dosage, AND frequency
+                // This allows tracking the same drug multiple times with different dosages/frequencies
                 const uniqueMedications = [];
                 const seenMedications = new Set();
-                
+
                 if (data.medications && data.medications.length > 0) {
                     data.medications.forEach(med => {
-                        const medKey = med.drug_name;
-                        
+                        // Use medication ID if available, otherwise create composite key
+                        const medKey = med.id || `${med.drug_name}-${med.dosage || ''}-${med.frequency || ''}`;
+
                         if (!seenMedications.has(medKey)) {
                             uniqueMedications.push(med);
                             seenMedications.add(medKey);
                         } else {
-                            // If there are duplicates, keep the most recent one
-                            const existingIndex = uniqueMedications.findIndex(m => m.drug_name === medKey);
-                            
+                            // If there are true duplicates (same ID or exact same drug+dosage+frequency),
+                            // keep the most recent one
+                            const existingIndex = uniqueMedications.findIndex(m => {
+                                const existingKey = m.id || `${m.drug_name}-${m.dosage || ''}-${m.frequency || ''}`;
+                                return existingKey === medKey;
+                            });
+
                             if (existingIndex !== -1) {
                                 const existingMed = uniqueMedications[existingIndex];
                                 const existingCreatedAt = new Date(existingMed.created_at || 0);
                                 const newCreatedAt = new Date(med.created_at || 0);
-                                
+
                                 if (newCreatedAt > existingCreatedAt) {
                                     uniqueMedications[existingIndex] = med;
                                 }
@@ -612,7 +618,7 @@ const MedicationService = {
                         }
                     });
                 }
-                
+
                 return uniqueMedications;
             } catch (error) {
                 console.error('Error loading medication tracking:', error);
@@ -641,15 +647,15 @@ const MedicationService = {
         const today = new Date();
         const todayString = today.toISOString().split('T')[0];
         
-        // With this enhanced filtering that checks for duplicates:
+        // Enhanced filtering that allows multiple entries of same drug with different dosages/frequencies
         const activeMeds = [];
         const seenMedications = new Set();
-  
+
         medications.forEach(med => {
-            // Skip if this is a duplicate medication (same name and frequency)
-            const medKey = `${med.drug_name}-${med.frequency}`;
+            // Use medication ID or composite key (drug name + dosage + frequency) to allow multiple entries
+            const medKey = med.id || `${med.drug_name}-${med.dosage || ''}-${med.frequency}`;
             if (seenMedications.has(medKey)) {
-                return;
+                return; // True duplicate (same ID or exact same drug+dosage+frequency)
             }
             
             const startDate = new Date(med.start_date);

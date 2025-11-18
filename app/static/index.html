@@ -16,7 +16,8 @@
   
   <!-- Styles -->
   <link rel="stylesheet" href="/static/css/modern-styles.css">
-  
+  <link rel="stylesheet" href="/static/css/exciting-ui.css">
+
   <!-- Favicon -->
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
 </head>
@@ -129,22 +130,60 @@
     <div class="container">
       <!-- Home Section (Default View) -->
       <section id="home-section" class="app-section active">
-        <div class="search-container">
-          <h2 class="section-title">How are you feeling?</h2>
-          <div class="input-with-button">
-            <input 
-              type="text" 
-              id="symptoms" 
-              placeholder="Tell us your symptoms..." 
-              aria-label="Enter your symptoms"
-              autocomplete="off"
-            />
-            <button 
-              id="submit-button" 
-              aria-label="Get recommendations based on symptoms"
-            >
-              <i class="fas fa-search"></i> Get Help
-            </button>
+        <!-- Hero Section -->
+        <div class="hero-section">
+          <div class="hero-content">
+            <h1 class="hero-title">
+              <span class="gradient-text">Feeling Under the Weather?</span>
+            </h1>
+            <p class="hero-subtitle">Get AI-powered medication recommendations tailored to your symptoms</p>
+
+            <!-- Enhanced Search Box -->
+            <div class="search-container enhanced-search">
+              <div class="search-box-wrapper">
+                <i class="fas fa-heartbeat search-icon"></i>
+                <input
+                  type="text"
+                  id="symptoms"
+                  placeholder="Describe your symptoms (e.g., headache, fever, sore throat)..."
+                  aria-label="Enter your symptoms"
+                  autocomplete="off"
+                  class="enhanced-search-input"
+                />
+                <button
+                  id="submit-button"
+                  class="enhanced-search-button"
+                  aria-label="Get recommendations based on symptoms"
+                >
+                  <i class="fas fa-magic"></i> Analyze
+                </button>
+              </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+              <div class="stat-item glass-card">
+                <i class="fas fa-brain stat-icon"></i>
+                <div class="stat-content">
+                  <span class="stat-value">AI-Powered</span>
+                  <span class="stat-label">Smart Analysis</span>
+                </div>
+              </div>
+              <div class="stat-item glass-card">
+                <i class="fas fa-shield-alt stat-icon"></i>
+                <div class="stat-content">
+                  <span class="stat-value">Safe & Verified</span>
+                  <span class="stat-label">Trusted Database</span>
+                </div>
+              </div>
+              <div class="stat-item glass-card">
+                <i class="fas fa-clock stat-icon"></i>
+                <div class="stat-content">
+                  <span class="stat-value">Instant</span>
+                  <span class="stat-label">Quick Results</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         
@@ -545,10 +584,187 @@
   <!-- Notification Container -->
   <div id="notification-container"></div>
 
+  <!-- Onboarding Flow -->
+  <div id="onboarding-overlay" class="onboarding-overlay" style="display: none;">
+    <div class="onboarding-container glass-card">
+      <!-- Progress Steps -->
+      <div class="onboarding-progress">
+        <div class="progress-step active" data-step="1">
+          <div class="step-circle">1</div>
+          <span class="step-label">Welcome</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2">
+          <div class="step-circle">2</div>
+          <span class="step-label">Profile</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3">
+          <div class="step-circle">3</div>
+          <span class="step-label">Health Info</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="4">
+          <div class="step-circle">4</div>
+          <span class="step-label">Medications</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="5">
+          <div class="step-circle">5</div>
+          <span class="step-label">Done</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Welcome -->
+      <div class="onboarding-step active" data-step="1">
+        <div class="step-content">
+          <div class="welcome-hero">
+            <i class="fas fa-hand-sparkles welcome-icon"></i>
+            <h2>Welcome to <span class="gradient-text">ayuda</span>!</h2>
+            <p>Your personal AI-powered health companion</p>
+          </div>
+          <div class="feature-highlights">
+            <div class="feature-item">
+              <i class="fas fa-brain"></i>
+              <h4>Smart Recommendations</h4>
+              <p>AI analyzes your symptoms for personalized suggestions</p>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-pills"></i>
+              <h4>Track Medications</h4>
+              <p>Never miss a dose with our tracking system</p>
+            </div>
+            <div class="feature-item">
+              <i class="fas fa-shield-alt"></i>
+              <h4>Safety First</h4>
+              <p>Contraindications and interaction warnings</p>
+            </div>
+          </div>
+          <button class="onboarding-next-btn">Get Started <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Step 2: Basic Profile -->
+      <div class="onboarding-step" data-step="2">
+        <div class="step-content">
+          <h2>Let's set up your profile</h2>
+          <p class="step-description">This helps us provide more accurate recommendations</p>
+          <form class="onboarding-form">
+            <div class="form-group">
+              <label for="onboarding-name">Name</label>
+              <input type="text" id="onboarding-name" placeholder="Your name" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="onboarding-age">Age</label>
+                <input type="number" id="onboarding-age" min="1" max="120" placeholder="25" required>
+              </div>
+              <div class="form-group">
+                <label for="onboarding-gender">Gender</label>
+                <select id="onboarding-gender">
+                  <option value="">Prefer not to say</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="onboarding-zip">ZIP Code (for pharmacy search)</label>
+              <input type="text" id="onboarding-zip" maxlength="5" pattern="[0-9]{5}" placeholder="12345">
+            </div>
+          </form>
+          <div class="step-buttons">
+            <button class="onboarding-back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="onboarding-next-btn">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Health Information -->
+      <div class="onboarding-step" data-step="3">
+        <div class="step-content">
+          <h2>Health Information</h2>
+          <p class="step-description">Help us understand your health conditions and allergies</p>
+          <form class="onboarding-form">
+            <div class="form-group">
+              <label for="onboarding-allergies">Allergies</label>
+              <p class="input-hint">Add any drug or ingredient allergies (press Enter to add)</p>
+              <div class="tag-input-container">
+                <div class="tags-display" id="allergies-tags"></div>
+                <input type="text" id="onboarding-allergies" placeholder="e.g., Penicillin, Aspirin">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="onboarding-conditions">Medical Conditions</label>
+              <p class="input-hint">Add any ongoing medical conditions (press Enter to add)</p>
+              <div class="tag-input-container">
+                <div class="tags-display" id="conditions-tags"></div>
+                <input type="text" id="onboarding-conditions" placeholder="e.g., Diabetes, Hypertension">
+              </div>
+            </div>
+          </form>
+          <div class="step-buttons">
+            <button class="onboarding-back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="onboarding-next-btn">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Current Medications -->
+      <div class="onboarding-step" data-step="4">
+        <div class="step-content">
+          <h2>Current Medications</h2>
+          <p class="step-description">Add any medications you're currently taking (optional)</p>
+          <form class="onboarding-form">
+            <div class="form-group">
+              <label for="onboarding-medications">Medications</label>
+              <p class="input-hint">Add current medications (press Enter to add)</p>
+              <div class="tag-input-container">
+                <div class="tags-display" id="medications-tags"></div>
+                <input type="text" id="onboarding-medications" placeholder="e.g., Ibuprofen, Metformin">
+              </div>
+            </div>
+            <div class="skip-hint">
+              <i class="fas fa-info-circle"></i>
+              You can skip this step and add medications later
+            </div>
+          </form>
+          <div class="step-buttons">
+            <button class="onboarding-back-btn"><i class="fas fa-arrow-left"></i> Back</button>
+            <button class="onboarding-skip-btn">Skip</button>
+            <button class="onboarding-next-btn">Next <i class="fas fa-arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 5: Complete -->
+      <div class="onboarding-step" data-step="5">
+        <div class="step-content">
+          <div class="completion-animation">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h2>You're All Set!</h2>
+            <p>Your profile is ready. Start getting personalized medication recommendations now.</p>
+          </div>
+          <div class="quick-tips">
+            <h3>Quick Tips:</h3>
+            <ul>
+              <li><i class="fas fa-lightbulb"></i> Describe your symptoms in detail for better results</li>
+              <li><i class="fas fa-bell"></i> Enable medication reminders in your profile</li>
+              <li><i class="fas fa-history"></i> Check your history to track past recommendations</li>
+            </ul>
+          </div>
+          <button class="onboarding-finish-btn">Start Using ayuda <i class="fas fa-rocket"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Application Scripts -->
   <script src="/static/js/modern-ui.js" type="module"></script>
   <script src="/static/js/apiService.js" type="module"></script>
   <script src="/static/js/auth.js" type="module"></script>
+  <script src="/static/js/onboarding.js" type="module"></script>
   <script src="/static/js/medications.js" type="module"></script>
   <script src="/static/js/app.js" type="module"></script>
 
