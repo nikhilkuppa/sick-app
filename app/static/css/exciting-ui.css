@@ -828,3 +828,289 @@ button:active:not(:disabled) {
     border: 1px solid #ccc;
   }
 }
+}
+
+/* ===== Feature 1: Enhanced Symptom Interpreter ===== */
+
+/* Symptom Assessment Card */
+.symptom-assessment {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 25px;
+  margin-bottom: 30px;
+  animation: slideInUp 0.5s ease-out;
+}
+
+.symptom-assessment h3 {
+  color: #fff;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.symptom-assessment h3 i {
+  color: #4CAF50;
+}
+
+/* Severity Badge */
+.severity-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.severity-badge.mild {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.severity-badge.moderate {
+  background: linear-gradient(135deg, #FFA726, #FFB74D);
+  color: #1a1a1a;
+  box-shadow: 0 4px 15px rgba(255, 167, 38, 0.4);
+}
+
+.severity-badge.severe {
+  background: linear-gradient(135deg, #EF5350, #E57373);
+  color: white;
+  box-shadow: 0 4px 15px rgba(239, 83, 80, 0.4);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.severity-badge i {
+  font-size: 1.2rem;
+}
+
+/* Red Flags Warning */
+.red-flags-container {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.2), rgba(229, 115, 115, 0.15));
+  border: 2px solid #EF5350;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.red-flags-container.emergency {
+  animation: pulse 0.8s ease-in-out infinite;
+  box-shadow: 0 0 30px rgba(239, 83, 80, 0.6);
+}
+
+.red-flags-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #EF5350;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+}
+
+.red-flags-header i {
+  font-size: 1.5rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.red-flags-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.red-flags-list li {
+  padding: 8px 0;
+  padding-left: 30px;
+  position: relative;
+  color: #ffcccc;
+  font-weight: 500;
+}
+
+.red-flags-list li::before {
+  content: '⚠️';
+  position: absolute;
+  left: 0;
+  font-size: 1.2rem;
+}
+
+/* Doctor Recommendation Card */
+.doctor-recommendation {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(129, 199, 132, 0.1));
+  border: 2px solid #4CAF50;
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.doctor-recommendation.urgent {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.15), rgba(229, 115, 115, 0.1));
+  border-color: #EF5350;
+}
+
+.doctor-recommendation.urgent .doctor-icon {
+  color: #EF5350;
+}
+
+.doctor-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+}
+
+.doctor-icon {
+  font-size: 2rem;
+  color: #4CAF50;
+}
+
+.doctor-urgency {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.doctor-message {
+  color: #e0e0e0;
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.urgency-badge {
+  display: inline-block;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 10px;
+}
+
+.urgency-badge.immediate {
+  background: #EF5350;
+  color: white;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.urgency-badge.within_24h {
+  background: #FFA726;
+  color: #1a1a1a;
+}
+
+.urgency-badge.within_week {
+  background: #66BB6A;
+  color: white;
+}
+
+.urgency-badge.not_needed {
+  background: rgba(255, 255, 255, 0.1);
+  color: #a5d6a7;
+}
+
+/* Assessment Reasoning */
+.assessment-reasoning {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid #4CAF50;
+  padding: 15px 20px;
+  margin-top: 20px;
+  border-radius: 8px;
+  font-style: italic;
+  color: #c8e6c9;
+}
+
+.assessment-reasoning i {
+  margin-right: 10px;
+  color: #81C784;
+}
+
+/* Emergency Call to Action */
+.emergency-cta {
+  background: linear-gradient(135deg, #EF5350, #E57373);
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+  text-align: center;
+  margin: 25px 0;
+  box-shadow: 0 8px 25px rgba(239, 83, 80, 0.4);
+  animation: pulse 0.8s ease-in-out infinite;
+}
+
+.emergency-cta h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.emergency-cta-button {
+  background: white;
+  color: #EF5350;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.emergency-cta-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile responsiveness for symptom assessment */
+@media (max-width: 480px) {
+  .symptom-assessment {
+    padding: 20px 15px;
+  }
+
+  .severity-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .severity-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .doctor-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .emergency-cta h3 {
+    font-size: 1.2rem;
+  }
+
+  .emergency-cta-button {
+    width: 100%;
+    justify-content: center;
+  }
+}

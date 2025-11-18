@@ -281,11 +281,120 @@ function displayResults(data) {
   
   // Process each item in the results
   data.recommendations.forEach((item, index) => {
-    if (index === 0) {
-      // Special formatting for the first item (First Aid)
+    // Check if first item is Symptom Assessment (new enhanced feature)
+    if (index === 0 && item["Symptom Assessment"]) {
+      const assessment = item["Symptom Assessment"];
+      const assessmentDiv = document.createElement('div');
+      assessmentDiv.className = 'symptom-assessment fade-in';
+
+      // Header
+      const header = document.createElement('h3');
+      header.innerHTML = '<i class="fas fa-stethoscope"></i> Symptom Analysis';
+      assessmentDiv.appendChild(header);
+
+      // Severity Badge
+      const severityContainer = document.createElement('div');
+      severityContainer.className = 'severity-container';
+
+      const severityBadge = document.createElement('div');
+      severityBadge.className = `severity-badge ${assessment.severity}`;
+      const severityIcon = assessment.severity === 'mild' ? 'fa-check-circle' :
+                          assessment.severity === 'moderate' ? 'fa-exclamation-circle' :
+                          'fa-exclamation-triangle';
+      severityBadge.innerHTML = `<i class="fas ${severityIcon}"></i> ${assessment.severity.toUpperCase()}`;
+      severityContainer.appendChild(severityBadge);
+      assessmentDiv.appendChild(severityContainer);
+
+      // Red Flags (if any)
+      if (assessment.redFlags && assessment.redFlags.length > 0) {
+        const redFlagsDiv = document.createElement('div');
+        redFlagsDiv.className = assessment.doctorUrgency === 'immediate' ?
+                                'red-flags-container emergency' : 'red-flags-container';
+
+        const redFlagsHeader = document.createElement('div');
+        redFlagsHeader.className = 'red-flags-header';
+        redFlagsHeader.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Warning Signs Detected';
+        redFlagsDiv.appendChild(redFlagsHeader);
+
+        const redFlagsList = document.createElement('ul');
+        redFlagsList.className = 'red-flags-list';
+        assessment.redFlags.forEach(flag => {
+          const li = document.createElement('li');
+          li.textContent = flag;
+          redFlagsList.appendChild(li);
+        });
+        redFlagsDiv.appendChild(redFlagsList);
+        assessmentDiv.appendChild(redFlagsDiv);
+      }
+
+      // Doctor Recommendation
+      if (assessment.seekDoctor) {
+        const doctorDiv = document.createElement('div');
+        doctorDiv.className = assessment.doctorUrgency === 'immediate' ?
+                             'doctor-recommendation urgent' : 'doctor-recommendation';
+
+        const doctorHeader = document.createElement('div');
+        doctorHeader.className = 'doctor-header';
+        doctorHeader.innerHTML = '<i class="fas fa-user-md doctor-icon"></i>';
+
+        const urgencyTitle = document.createElement('div');
+        urgencyTitle.className = 'doctor-urgency';
+
+        const urgencyMessages = {
+          'immediate': '🚨 Seek Immediate Medical Attention',
+          'within_24h': 'See a Doctor Within 24 Hours',
+          'within_week': 'Schedule a Doctor Visit This Week',
+          'not_needed': 'Monitor Your Symptoms'
+        };
+        urgencyTitle.textContent = urgencyMessages[assessment.doctorUrgency] || 'Consult a Healthcare Provider';
+        doctorHeader.appendChild(urgencyTitle);
+        doctorDiv.appendChild(doctorHeader);
+
+        const doctorMessage = document.createElement('div');
+        doctorMessage.className = 'doctor-message';
+        doctorMessage.textContent = assessment.reasoning;
+        doctorDiv.appendChild(doctorMessage);
+
+        const urgencyBadge = document.createElement('span');
+        urgencyBadge.className = `urgency-badge ${assessment.doctorUrgency}`;
+        urgencyBadge.textContent = assessment.doctorUrgency.replace('_', ' ');
+        doctorDiv.appendChild(urgencyBadge);
+
+        // Emergency CTA for immediate cases
+        if (assessment.doctorUrgency === 'immediate') {
+          const emergencyCTA = document.createElement('div');
+          emergencyCTA.className = 'emergency-cta';
+          emergencyCTA.innerHTML = `
+            <h3><i class="fas fa-ambulance"></i> Emergency Situation</h3>
+            <p>Call 911 or go to the nearest emergency room immediately</p>
+            <a href="tel:911" class="emergency-cta-button">
+              <i class="fas fa-phone"></i> Call 911
+            </a>
+          `;
+          doctorDiv.appendChild(emergencyCTA);
+        }
+
+        assessmentDiv.appendChild(doctorDiv);
+      }
+
+      // Reasoning
+      if (assessment.reasoning && !assessment.seekDoctor) {
+        const reasoningDiv = document.createElement('div');
+        reasoningDiv.className = 'assessment-reasoning';
+        reasoningDiv.innerHTML = `<i class="fas fa-lightbulb"></i> ${assessment.reasoning}`;
+        assessmentDiv.appendChild(reasoningDiv);
+      }
+
+      elements.resultsDiv.appendChild(assessmentDiv);
+      return; // Skip to next iteration
+    }
+
+    // Check if this is First Aid (could be index 0 or 1 depending on if Symptom Assessment exists)
+    if (item["First Aid"]) {
+      // Special formatting for First Aid
       const firstAidDiv = document.createElement('div');
       firstAidDiv.className = 'first-aid';
-      
+
       // First Aid recommendations
       const firstAid = item["First Aid"];
       const possibleExplanation = document.createElement('p');

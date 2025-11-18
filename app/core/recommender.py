@@ -136,11 +136,31 @@ def recommender_prompt(query, context, user_context=None):
     # Build main prompt
     prompt = f"""You are a helpful assistant that provides solely Over The Counter
     drug information in JSON format based on the following context from MedlinePlus.
-    
+
     {user_context_str}
 
-    Your response MUST be a valid ranked JSON array of objects, where first object of objects should be "First Aid" that you will suggest
-    based on your expert knowledge base [recommending first aid is NOT medical advice, but please be diligent],
+    IMPORTANT: Your response MUST include a symptom assessment BEFORE the drug recommendations.
+
+    The first object in the JSON array MUST be "Symptom Assessment" with these fields:
+    - "severity": Rate the symptoms as "mild", "moderate", or "severe"
+    - "redFlags": List any emergency/red flag symptoms detected (empty array if none)
+    - "seekDoctor": Boolean - whether user should see a doctor
+    - "doctorUrgency": "immediate" (ER/urgent care), "within_24h", "within_week", or "not_needed"
+    - "reasoning": Brief explanation of the assessment (1-2 sentences)
+
+    RED FLAGS that require immediate medical attention include:
+    - Chest pain, pressure, or tightness
+    - Difficulty breathing or shortness of breath
+    - Severe headache with confusion or vision changes
+    - High fever (>103°F) or persistent fever
+    - Signs of stroke (face drooping, arm weakness, speech difficulty)
+    - Severe abdominal pain
+    - Coughing up blood
+    - Loss of consciousness or altered mental state
+    - Severe allergic reaction symptoms
+
+    The second object should be "First Aid" that you will suggest based on your expert knowledge base
+    [recommending first aid is NOT medical advice, but please be diligent],
     and after that each object contains the following keys:
     ["Brand Name(s)", "Scientific Name", "Dosage", "Symptoms Addressed", "Reference URL"].
 
@@ -157,21 +177,40 @@ def recommender_prompt(query, context, user_context=None):
     Refrain from suggesting going to the doctor as the user has already been recommended that, and they now seek simply aid and 
     OTC medication recommendations. Try ensuring that the quickest, cheapest and accessible recommendations are different.
 
-    If you believe the user's symptoms when parallel with another relevant unmentioned symptom could possibly lead to a life-threatening 
+    If you believe the user's symptoms when parallel with another relevant unmentioned symptom could possibly lead to a life-threatening
     situation, then ask if they are experiencing the parallel symptom to the current symptom and recommend to call an ambulance immediately.
     Output this field in the "emergency" field of the First Aid.
-    
-    It should look like
-    First Aid: {{
-        "emergency":
-        "possibleExplanation":
-        "quickest":
-        "cheapest":
-        "accessible:
-    }}
 
-    where quickest is the quickest first aid remedy, cheapest is the cheapest, and accessible is home accessible remedy. 
-    In the "possibleExplanation" field, try explaining what the issue might be, in a non medical way. This is so that the user can make 
+    EXAMPLE JSON STRUCTURE:
+    [
+        {{
+            "Symptom Assessment": {{
+                "severity": "moderate",
+                "redFlags": ["persistent high fever"],
+                "seekDoctor": true,
+                "doctorUrgency": "within_24h",
+                "reasoning": "Fever above 101°F persisting for more than 3 days should be evaluated by a healthcare provider to rule out bacterial infection."
+            }}
+        }},
+        {{
+            "First Aid": {{
+                "emergency": "If fever exceeds 103°F or accompanied by severe headache and stiff neck, seek immediate medical attention",
+                "possibleExplanation": "Your symptoms suggest a viral or bacterial infection causing inflammation",
+                "quickest": "Apply cool compress to forehead and take lukewarm bath",
+                "cheapest": "Rest and stay hydrated with water or electrolyte drinks",
+                "accessible": "Remove excess clothing and use a fan for air circulation"
+            }}
+        }},
+        {{
+            "Brand Name(s)": "Tylenol, Panadol",
+            "Scientific Name": "Acetaminophen",
+            "Dosage": "500mg every 4-6 hours",
+            "Symptoms Addressed": "Fever, headache, body aches",
+            "Reference URL": "https://medlineplus.gov/..."
+        }}
+    ]
+
+    In the "possibleExplanation" field, try explaining what the issue might be, in a non medical way. This is so that the user can make
     connections between the issues they're facing and how those drugs may help.
 
     Make first aid responses age-appropriate. If the user is a child (<= 13y old), have an endearing tone.
