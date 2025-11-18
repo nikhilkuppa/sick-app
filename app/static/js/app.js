@@ -461,7 +461,65 @@ function displayResults(data) {
       nameHeading.className = 'drug-name';
       nameHeading.textContent = item["Scientific Name"];
       drugDiv.appendChild(nameHeading);
-      
+
+      // Feature 2: Contraindication Checker
+      if (item["Contraindications"]) {
+        const contra = item["Contraindications"];
+
+        // Add safety badge
+        const safetyBadge = document.createElement('div');
+        if (contra.safe) {
+          safetyBadge.className = 'safety-badge safe';
+          safetyBadge.innerHTML = '<i class="fas fa-check-circle"></i> Safe for You';
+        } else if (contra.warnings && contra.warnings.length > 0) {
+          safetyBadge.className = contra.reason ? 'safety-badge unsafe' : 'safety-badge warning';
+          const icon = contra.reason ? 'fa-exclamation-triangle' : 'fa-exclamation-circle';
+          safetyBadge.innerHTML = `<i class="fas ${icon}"></i> ${contra.reason ? 'Contraindicated' : 'Caution'}`;
+
+          // Mark drug card as unsafe/warning
+          drugDiv.classList.add(contra.reason ? 'unsafe' : 'warning');
+        }
+        drugDiv.appendChild(safetyBadge);
+
+        // Display warnings if any
+        if (contra.warnings && contra.warnings.length > 0) {
+          const warningBox = document.createElement('div');
+          warningBox.className = contra.reason ? 'contraindication-warning severe' : 'contraindication-warning';
+
+          const warningHeader = document.createElement('div');
+          warningHeader.className = 'contraindication-header';
+          warningHeader.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${contra.reason ? 'Not Recommended' : 'Important Warnings'}`;
+          warningBox.appendChild(warningHeader);
+
+          const warningList = document.createElement('ul');
+          warningList.className = 'contraindication-list';
+          contra.warnings.forEach(warning => {
+            const li = document.createElement('li');
+            li.textContent = warning;
+            warningList.appendChild(li);
+          });
+          warningBox.appendChild(warningList);
+
+          // Add reason if provided
+          if (contra.reason) {
+            const reasonDiv = document.createElement('div');
+            reasonDiv.className = 'contraindication-reason';
+            reasonDiv.textContent = contra.reason;
+            warningBox.appendChild(reasonDiv);
+          }
+
+          drugDiv.appendChild(warningBox);
+        }
+
+        // Add safe indicator for safe drugs
+        if (contra.safe && (!contra.warnings || contra.warnings.length === 0)) {
+          const safeIndicator = document.createElement('div');
+          safeIndicator.className = 'safe-indicator';
+          safeIndicator.innerHTML = '<i class="fas fa-shield-alt"></i> No known contraindications for your profile';
+          drugDiv.appendChild(safeIndicator);
+        }
+      }
+
       // Brand names
       if (item["Brand Name(s)"]) {
         const brandP = document.createElement('p');

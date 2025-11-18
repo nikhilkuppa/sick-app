@@ -206,7 +206,24 @@ def recommender_prompt(query, context, user_context=None):
             "Scientific Name": "Acetaminophen",
             "Dosage": "500mg every 4-6 hours",
             "Symptoms Addressed": "Fever, headache, body aches",
-            "Reference URL": "https://medlineplus.gov/..."
+            "Reference URL": "https://medlineplus.gov/...",
+            "Contraindications": {{
+                "safe": true,
+                "warnings": [],
+                "reason": ""
+            }}
+        }},
+        {{
+            "Brand Name(s)": "Advil, Motrin",
+            "Scientific Name": "Ibuprofen",
+            "Dosage": "200-400mg every 4-6 hours",
+            "Symptoms Addressed": "Pain, inflammation, fever",
+            "Reference URL": "https://medlineplus.gov/...",
+            "Contraindications": {{
+                "safe": false,
+                "warnings": ["Not recommended with history of ulcers", "May interact with blood thinners"],
+                "reason": "NSAIDs can worsen gastric ulcers and increase bleeding risk"
+            }}
         }}
     ]
 
@@ -215,21 +232,47 @@ def recommender_prompt(query, context, user_context=None):
 
     Make first aid responses age-appropriate. If the user is a child (<= 13y old), have an endearing tone.
 
+    CRITICAL - CONTRAINDICATION CHECKING (Feature 2):
+    Before recommending ANY drug, you MUST check for contraindications based on the user information provided above.
+
+    For EACH drug recommendation, add a "Contraindications" field with:
+    - "safe": Boolean - true if drug is safe for user, false if contraindicated
+    - "warnings": Array of specific warnings for this user (empty if safe)
+    - "reason": Brief explanation if unsafe (omit if safe)
+
+    Check for these contraindications:
+    1. **Allergies**: If user has listed allergies, check if drug or its ingredients match
+    2. **Age**: Pediatric restrictions (<12y), geriatric cautions (>65y)
+    3. **Gender**: Pregnancy warnings, gender-specific contraindications
+    4. **Medical Conditions**: Drug-disease interactions (e.g., NSAIDS + ulcers, decongestants + hypertension)
+    5. **Current Medications**: Drug-drug interactions from medication history
+
+    EXAMPLES of contraindications:
+    - Aspirin contraindicated for children <12 (Reye's syndrome risk)
+    - NSAIDs contraindicated with history of ulcers/bleeding
+    - Decongestants contraindicated with hypertension/heart disease
+    - Antihistamines caution for elderly (confusion, falls)
+    - Certain drugs unsafe during pregnancy
+
+    If a drug is contraindicated (safe: false), you MAY still include it with prominent warnings,
+    OR you may exclude it entirely depending on severity. Use your medical knowledge.
+
     Now, map the following information from the context to the JSON keys:
-    - "Brand Name(s)" from the 'brand_names' field. [Only return at max 5, most commonly used, FDA approved brand names, based on whether they're a child or an adult. 
+    - "Brand Name(s)" from the 'brand_names' field. [Only return at max 5, most commonly used, FDA approved brand names, based on whether they're a child or an adult.
        Dont return what is in the paranthesis fields; add spaces between brand names you return]
     - "Scientific Name" from the 'title' field.
     - "Dosage" from the 'usage' field.
     - "Symptoms Addressed" from the 'symptoms' field.
     - "Reference URL" from the 'url' field.
+    - "Contraindications" - NEW FIELD (see above for structure)
 
-    Note: If any of the fields look like data-preprocessing artifacts like "Max retries exceeded" or something semantically 
+    Note: If any of the fields look like data-preprocessing artifacts like "Max retries exceeded" or something semantically
     similar, please input placeholder/actual information from your own database.
 
-    Only use information present in the context provided below, and only return purely relevant OTC drugs from this. 
+    Only use information present in the context provided below, and only return purely relevant OTC drugs from this.
     Do not make up information ***UNLESS THE CONTEXT DRUGS ARE ABSOLUTELY UNRELATED TO WHAT THE USER
     IS TRYING TO ADDRESS OR SEEK HELP FOR. IN THAT CASE YOU ARE ALLOWED TO SUGGEST PURELY OTC DRUGS/REMEDIES***.
-    
+
     If a field is missing for a particular drug, you can omit that key-value pair in the JSON object.
 
     Context:

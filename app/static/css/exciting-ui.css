@@ -1114,3 +1114,186 @@ button:active:not(:disabled) {
     justify-content: center;
   }
 }
+
+/* ===== Feature 2: Contraindication Checker ===== */
+
+/* Safety Badge on Drug Cards */
+.safety-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.safety-badge.safe {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  color: white;
+}
+
+.safety-badge.warning {
+  background: linear-gradient(135deg, #FFA726, #FFB74D);
+  color: #1a1a1a;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.safety-badge.unsafe {
+  background: linear-gradient(135deg, #EF5350, #E57373);
+  color: white;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Contraindication Warning Box */
+.contraindication-warning {
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.15), rgba(255, 183, 77, 0.1));
+  border: 2px solid #FFA726;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.contraindication-warning.severe {
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.2), rgba(229, 115, 115, 0.15));
+  border-color: #EF5350;
+}
+
+.contraindication-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFA726;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+
+.contraindication-warning.severe .contraindication-header {
+  color: #EF5350;
+}
+
+.contraindication-header i {
+  font-size: 1.2rem;
+}
+
+.contraindication-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.contraindication-list li {
+  padding: 6px 0;
+  padding-left: 25px;
+  position: relative;
+  color: #FFE0B2;
+  font-size: 0.95rem;
+}
+
+.contraindication-warning.severe .contraindication-list li {
+  color: #FFCCBC;
+}
+
+.contraindication-list li::before {
+  content: '⚠️';
+  position: absolute;
+  left: 0;
+  font-size: 1rem;
+}
+
+.contraindication-reason {
+  margin-top: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  font-style: italic;
+  color: #FFE082;
+  font-size: 0.9rem;
+}
+
+.contraindication-warning.severe .contraindication-reason {
+  color: #FFCDD2;
+}
+
+/* Drug Card Modifications for Safety */
+.drug-card.unsafe {
+  border: 2px solid #EF5350;
+  background: linear-gradient(135deg, rgba(239, 83, 80, 0.05), rgba(229, 115, 115, 0.03));
+}
+
+.drug-card.warning {
+  border: 2px solid #FFA726;
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.05), rgba(255, 183, 77, 0.03));
+}
+
+/* Safe Drug Indicator */
+.safe-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #81C784;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.safe-indicator i {
+  font-size: 1.1rem;
+}
+
+/* Contraindication Summary (top of results) */
+.contraindication-summary {
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 167, 38, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 25px;
+  animation: slideInUp 0.5s ease-out;
+}
+
+.contraindication-summary h3 {
+  color: #FFA726;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contraindication-summary h3 i {
+  font-size: 1.5rem;
+}
+
+.filtered-drugs-info {
+  color: #FFE082;
+  line-height: 1.6;
+}
+
+.filtered-drugs-info strong {
+  color: #FFB74D;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .contraindication-warning {
+    padding: 12px;
+  }
+
+  .contraindication-header {
+    font-size: 0.9rem;
+  }
+
+  .contraindication-list li {
+    font-size: 0.85rem;
+  }
+
+  .safety-badge {
+    font-size: 0.75rem;
+    padding: 5px 10px;
+  }
+}
