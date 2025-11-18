@@ -1,0 +1,574 @@
+/**
+ * Interaction Heatmap Styles
+ * Visual drug interaction matrix
+ */
+
+/* Heatmap Controls */
+.heatmap-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.heatmap-controls-left {
+  flex: 1;
+}
+
+.heatmap-description {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #aaa;
+  font-size: 14px;
+  margin: 0;
+}
+
+.heatmap-description i {
+  color: #667eea;
+}
+
+.heatmap-controls-right {
+  display: flex;
+  gap: 12px;
+}
+
+/* Empty States */
+.heatmap-empty-state {
+  text-align: center;
+  padding: 80px 40px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 20px;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+}
+
+.heatmap-empty-state .empty-icon {
+  font-size: 80px;
+  color: rgba(255, 255, 255, 0.2);
+  margin-bottom: 20px;
+}
+
+.heatmap-empty-state h3 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.heatmap-empty-state p {
+  color: #aaa;
+  margin-bottom: 15px;
+  font-size: 16px;
+}
+
+.heatmap-hint {
+  font-size: 14px !important;
+  margin-bottom: 30px !important;
+}
+
+.heatmap-hint strong {
+  color: #667eea;
+}
+
+/* Heatmap Wrapper */
+.heatmap-wrapper {
+  position: relative;
+}
+
+.heatmap-info {
+  background: rgba(102, 126, 234, 0.1);
+  border-left: 4px solid #667eea;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.heatmap-info p {
+  margin: 0;
+  color: #ddd;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heatmap-info i {
+  color: #667eea;
+}
+
+/* Heatmap Scroll Container */
+.heatmap-scroll-container {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.heatmap-scroll-container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.heatmap-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+}
+
+.heatmap-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(102, 126, 234, 0.5);
+  border-radius: 5px;
+}
+
+.heatmap-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(102, 126, 234, 0.7);
+}
+
+/* Heatmap Table */
+.interaction-heatmap-table {
+  border-collapse: separate;
+  border-spacing: 4px;
+  width: auto;
+  min-width: 100%;
+}
+
+.interaction-heatmap-table th,
+.interaction-heatmap-table td {
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Corner Cell */
+.heatmap-corner {
+  width: 120px;
+  height: 120px;
+  background: transparent;
+}
+
+/* Header Cells */
+.heatmap-header-cell,
+.heatmap-row-header {
+  background: rgba(102, 126, 234, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.heatmap-header-cell {
+  width: 60px;
+  height: 120px;
+  position: relative;
+}
+
+.heatmap-row-header {
+  width: 120px;
+  height: 60px;
+  text-align: right;
+  padding-right: 12px;
+}
+
+.heatmap-header-cell .header-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: 13px;
+  white-space: nowrap;
+  padding: 8px 0;
+}
+
+.heatmap-row-header .header-label {
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Heatmap Cells */
+.heatmap-cell {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.heatmap-cell-self {
+  background: rgba(107, 114, 128, 0.3);
+  cursor: not-allowed;
+}
+
+.heatmap-cell-empty {
+  background: transparent;
+}
+
+.heatmap-cell-interactive {
+  cursor: pointer;
+  font-size: 18px;
+  color: rgba(0, 0, 0, 0.8);
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.heatmap-cell-interactive:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.severity-icon {
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* Interaction Detail Panel */
+.interaction-detail-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border-top: 3px solid #667eea;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  padding: 24px 28px;
+  max-height: 60vh;
+  overflow-y: auto;
+  z-index: 1000;
+  animation: slideUpPanel 0.3s ease;
+  transition: transform 0.3s ease;
+}
+
+.interaction-detail-panel.hidden {
+  transform: translateY(100%);
+  pointer-events: none;
+}
+
+@keyframes slideUpPanel {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.detail-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-panel-header h4 {
+  margin: 0;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.detail-panel-close {
+  background: rgba(255, 107, 107, 0.15);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #ff6b6b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+}
+
+.detail-panel-close:hover {
+  background: rgba(255, 107, 107, 0.25);
+  transform: scale(1.1);
+}
+
+.detail-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.interaction-detail-medicines {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+.detail-medicine {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  text-align: center;
+}
+
+.detail-medicine i {
+  font-size: 32px;
+  color: #667eea;
+  margin-bottom: 8px;
+}
+
+.detail-medicine strong {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+.detail-medicine .dosage {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.interaction-icon {
+  font-size: 28px;
+}
+
+.interaction-severity {
+  padding: 20px;
+  border-radius: 12px;
+  position: relative;
+}
+
+.severity-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  margin-bottom: 12px;
+}
+
+.interaction-severity p {
+  margin: 0;
+  font-size: 15px;
+  color: #ffffff;
+  line-height: 1.6;
+}
+
+.interaction-warning {
+  padding: 16px 20px;
+  background: rgba(239, 68, 68, 0.15);
+  border-left: 4px solid #ef4444;
+  border-radius: 8px;
+  color: #ff6b6b;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.interaction-warning i {
+  font-size: 20px;
+  margin-top: 2px;
+}
+
+.interaction-warning strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.interaction-caution {
+  padding: 16px 20px;
+  background: rgba(251, 191, 36, 0.15);
+  border-left: 4px solid #fbbf24;
+  border-radius: 8px;
+  color: #feca57;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.interaction-caution i {
+  font-size: 20px;
+  margin-top: 2px;
+}
+
+.interaction-caution strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Legend */
+.heatmap-legend {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.heatmap-legend.hidden {
+  display: none;
+}
+
+.heatmap-legend h4 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.heatmap-legend h4 i {
+  color: #667eea;
+}
+
+.legend-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+}
+
+.legend-color {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.legend-item span {
+  font-size: 14px;
+  color: #ddd;
+  font-weight: 500;
+}
+
+/* Disclaimer */
+.heatmap-disclaimer {
+  margin-top: 20px;
+  padding: 16px 20px;
+  background: rgba(251, 191, 36, 0.1);
+  border-left: 4px solid #fbbf24;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.heatmap-disclaimer i {
+  color: #feca57;
+  font-size: 18px;
+  margin-top: 2px;
+}
+
+.heatmap-disclaimer p {
+  margin: 0;
+  color: #ddd;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.heatmap-disclaimer strong {
+  color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .heatmap-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .heatmap-controls-left,
+  .heatmap-controls-right {
+    width: 100%;
+  }
+
+  .heatmap-controls-right {
+    justify-content: space-between;
+  }
+
+  .heatmap-scroll-container {
+    padding: 12px;
+  }
+
+  .heatmap-corner {
+    width: 80px;
+    height: 80px;
+  }
+
+  .heatmap-row-header {
+    width: 80px;
+    font-size: 11px;
+  }
+
+  .heatmap-header-cell {
+    width: 50px;
+    height: 80px;
+  }
+
+  .heatmap-cell {
+    width: 50px;
+    height: 50px;
+  }
+
+  .interaction-detail-panel {
+    padding: 20px 16px;
+    max-height: 70vh;
+  }
+
+  .interaction-detail-medicines {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .detail-medicine i {
+    font-size: 24px;
+  }
+
+  .interaction-icon {
+    transform: rotate(90deg);
+    font-size: 20px;
+  }
+
+  .legend-items {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

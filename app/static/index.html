@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="/static/css/modern-styles.css">
   <link rel="stylesheet" href="/static/css/exciting-ui.css">
   <link rel="stylesheet" href="/static/css/medicine-cabinet.css">
+  <link rel="stylesheet" href="/static/css/interaction-heatmap.css">
 
   <!-- Favicon -->
   <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
@@ -34,7 +35,8 @@
       <nav class="main-nav">
         <ul>
           <li><a href="#" id="nav-home" class="active"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="#" id="nav-medications"><i class="fas fa-pills"></i> Medications</a></li>
+          <li><a href="#" id="nav-medications"><i class="fas fa-pills"></i> Cabinet</a></li>
+          <li><a href="#" id="nav-interactions"><i class="fas fa-chart-area"></i> Interactions</a></li>
           <li><a href="#" id="nav-history"><i class="fas fa-history"></i> History</a></li>
           <li><a href="#" id="nav-profile"><i class="fas fa-user-circle"></i> Profile</a></li>
         </ul>
@@ -88,7 +90,8 @@
       <nav id="mobile-nav" class="mobile-nav">
         <ul>
           <li><a href="#" id="mobile-home"><i class="fas fa-home"></i> Home</a></li>
-          <li><a href="#" id="mobile-medications"><i class="fas fa-pills"></i> Medications</a></li>
+          <li><a href="#" id="mobile-medications"><i class="fas fa-pills"></i> Cabinet</a></li>
+          <li><a href="#" id="mobile-interactions"><i class="fas fa-chart-area"></i> Interactions</a></li>
           <li><a href="#" id="mobile-history"><i class="fas fa-history"></i> History</a></li>
           <li><a href="#" id="mobile-profile"><i class="fas fa-user-circle"></i> Profile</a></li>
           <li class="mobile-auth-anonymous">
@@ -271,7 +274,45 @@
           </div>
         </div>
       </section>
-      
+
+      <!-- Interaction Heatmap Section -->
+      <section id="interactions-section" class="app-section">
+        <h2 class="section-title"><i class="fas fa-chart-area"></i> Drug Interaction Matrix</h2>
+
+        <div class="section-content">
+          <!-- Heatmap Controls -->
+          <div class="heatmap-controls">
+            <div class="heatmap-controls-left">
+              <p class="heatmap-description">
+                <i class="fas fa-info-circle"></i>
+                Visual analysis of potential drug interactions between your medications
+              </p>
+            </div>
+
+            <div class="heatmap-controls-right">
+              <button id="heatmap-refresh-btn" class="btn-secondary">
+                <i class="fas fa-sync-alt"></i> Refresh
+              </button>
+              <button id="heatmap-legend-toggle" class="btn-secondary">
+                <i class="fas fa-question-circle"></i> Legend
+              </button>
+            </div>
+          </div>
+
+          <!-- Interaction Heatmap Display -->
+          <div id="interaction-heatmap-display" class="interaction-heatmap-container">
+            <!-- Heatmap will be rendered here by interaction-heatmap.js -->
+          </div>
+
+          <!-- Disclaimer -->
+          <div class="heatmap-disclaimer">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p><strong>Disclaimer:</strong> This tool provides general information about drug interactions.
+            Always consult your doctor or pharmacist before taking multiple medications together.</p>
+          </div>
+        </div>
+      </section>
+
       <!-- Unified History Section -->
       <section id="history-section" class="app-section">
         <h2 class="section-title"><i class="fas fa-history"></i> Your History</h2>
@@ -789,6 +830,7 @@
   <script src="/static/js/auth.js" type="module"></script>
   <script src="/static/js/onboarding.js" type="module"></script>
   <script src="/static/js/medicine-cabinet.js" type="module"></script>
+  <script src="/static/js/interaction-heatmap.js" type="module"></script>
   <script src="/static/js/medications.js" type="module"></script>
   <script src="/static/js/app.js" type="module"></script>
 

@@ -271,17 +271,19 @@ function setupSectionNavigation() {
     'nav-home': 'home-section',
     'nav-profile': 'profile-section',
     'nav-medications': 'medications-section',
+    'nav-interactions': 'interactions-section',
     'nav-history': 'history-section',
-    
+
     // Dropdown navigation
     'profile-menu-item': 'profile-section',
     'medications-menu-item': 'medications-section',
     'history-menu-item': 'history-section',
-    
+
     // Mobile navigation
     'mobile-home': 'home-section',
     'mobile-profile': 'profile-section',
     'mobile-medications': 'medications-section',
+    'mobile-interactions': 'interactions-section',
     'mobile-history': 'history-section'
   };
   
