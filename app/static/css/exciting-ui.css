@@ -575,3 +575,256 @@ html {
 .float-effect {
   animation: float 3s ease-in-out infinite;
 }
+
+/* Additional Animation Classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+.slide-in-right {
+  animation: slideInRight 0.5s ease-out;
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.scale-up {
+  animation: scaleUp 0.3s ease-out;
+}
+
+/* Smooth transitions for all interactive elements */
+button, .card, .glass-card, .medication-item, a {
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+/* Hover effects for buttons */
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+}
+
+button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+}
+
+/* Card hover animations */
+.card:hover, .glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading spinner animation */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(76, 175, 80, 0.2);
+  border-top-color: #4CAF50;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Stagger animation for lists */
+.medication-item:nth-child(1) { animation-delay: 0.1s; }
+.medication-item:nth-child(2) { animation-delay: 0.2s; }
+.medication-item:nth-child(3) { animation-delay: 0.3s; }
+.medication-item:nth-child(4) { animation-delay: 0.4s; }
+.medication-item:nth-child(5) { animation-delay: 0.5s; }
+
+.stat-item:nth-child(1) { animation-delay: 0.1s; }
+.stat-item:nth-child(2) { animation-delay: 0.2s; }
+.stat-item:nth-child(3) { animation-delay: 0.3s; }
+
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
+  .quick-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .stat-item {
+    padding: 15px;
+  }
+
+  .onboarding-progress {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .progress-step {
+    flex: 1 1 auto;
+  }
+
+  .progress-line {
+    display: none;
+  }
+
+  .step-label {
+    font-size: 0.7rem;
+  }
+
+  /* Improved touch targets for mobile */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .tag-remove {
+    min-height: 24px;
+    min-width: 24px;
+  }
+}
+
+/* Tablet optimization */
+@media (min-width: 481px) and (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .stat-item:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Large desktop optimization */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+
+  .hero-title {
+    font-size: 4rem;
+  }
+
+  .quick-stats {
+    gap: 30px;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hero-section::before {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .gradient-text {
+    -webkit-text-fill-color: currentColor;
+    color: #4CAF50;
+  }
+}
+
+/* Dark mode enhancements (for future implementation) */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: linear-gradient(-45deg, #0a1f0a, #1a3a1a, #0f2d0f, #162816);
+  }
+}
+
+/* Print styles */
+@media print {
+  .hero-section,
+  .quick-stats,
+  .onboarding-overlay,
+  button,
+  .fab-container {
+    display: none;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .glass-card {
+    background: white;
+    border: 1px solid #ccc;
+  }
+}
